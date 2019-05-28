@@ -1,0 +1,385 @@
+state.id,state,region,month,year,summer
+1,Aguascalientes,Sur,1,2017,No
+2,Baja California,Baja California,1,2017,No
+3,Baja California Sur,Baja California Sur,1,2017,No
+4,Campeche,Peninsular,1,2017,No
+5,Coahuila,Noreste,1,2017,No
+6,Colima,Sur,1,2017,No
+7,Chiapas,Sur,1,2017,No
+8,Chihuahua,Norte,1,2017,No
+9,Mexico City,Central,1,2017,No
+10,Durango,Norte,1,2017,No
+11,Guanajuato,Sur,1,2017,No
+12,Guerrero,Sur,1,2017,No
+13,Hidalgo,Central,1,2017,No
+14,Jalisco,Sur,1,2017,No
+15,Mexico,Central,1,2017,No
+16,Michoacan,Sur,1,2017,No
+17,Morelos,Central,1,2017,No
+18,Nayarit,Sur,1,2017,No
+19,Nuevo Leon,Noreste,1,2017,No
+20,Oaxaca,Sur,1,2017,No
+21,Puebla,Central,1,2017,No
+22,Queretaro,Sur,1,2017,No
+23,Quintana Roo,Peninsular,1,2017,No
+24,San Luis Potosi,Noreste,1,2017,No
+25,Sinaloa,Noroeste,1,2017,No
+26,Sonora,Noroeste,1,2017,No
+27,Tabasco,Sur,1,2017,No
+28,Tamaulipas,Noreste,1,2017,No
+29,Tlaxcala,Central,1,2017,No
+30,Veracruz,Sur,1,2017,No
+31,Yucatan,Peninsular,1,2017,No
+32,Zacatecas,Norte,1,2017,No
+1,Aguascalientes,Sur,2,2017,No
+2,Baja California,Baja California,2,2017,No
+3,Baja California Sur,Baja California Sur,2,2017,No
+4,Campeche,Peninsular,2,2017,No
+5,Coahuila,Noreste,2,2017,No
+6,Colima,Sur,2,2017,No
+7,Chiapas,Sur,2,2017,No
+8,Chihuahua,Norte,2,2017,No
+9,Mexico City,Central,2,2017,No
+10,Durango,Norte,2,2017,No
+11,Guanajuato,Sur,2,2017,No
+12,Guerrero,Sur,2,2017,No
+13,Hidalgo,Central,2,2017,No
+14,Jalisco,Sur,2,2017,No
+15,Mexico,Central,2,2017,No
+16,Michoacan,Sur,2,2017,No
+17,Morelos,Central,2,2017,No
+18,Nayarit,Sur,2,2017,No
+19,Nuevo Leon,Noreste,2,2017,No
+20,Oaxaca,Sur,2,2017,No
+21,Puebla,Central,2,2017,No
+22,Queretaro,Sur,2,2017,No
+23,Quintana Roo,Peninsular,2,2017,No
+24,San Luis Potosi,Noreste,2,2017,No
+25,Sinaloa,Noroeste,2,2017,No
+26,Sonora,Noroeste,2,2017,No
+27,Tabasco,Sur,2,2017,No
+28,Tamaulipas,Noreste,2,2017,No
+29,Tlaxcala,Central,2,2017,No
+30,Veracruz,Sur,2,2017,No
+31,Yucatan,Peninsular,2,2017,No
+32,Zacatecas,Norte,2,2017,No
+1,Aguascalientes,Sur,3,2017,No
+2,Baja California,Baja California,3,2017,No
+3,Baja California Sur,Baja California Sur,3,2017,No
+4,Campeche,Peninsular,3,2017,No
+5,Coahuila,Noreste,3,2017,No
+6,Colima,Sur,3,2017,No
+7,Chiapas,Sur,3,2017,No
+8,Chihuahua,Norte,3,2017,No
+9,Mexico City,Central,3,2017,No
+10,Durango,Norte,3,2017,No
+11,Guanajuato,Sur,3,2017,No
+12,Guerrero,Sur,3,2017,No
+13,Hidalgo,Central,3,2017,No
+14,Jalisco,Sur,3,2017,No
+15,Mexico,Central,3,2017,No
+16,Michoacan,Sur,3,2017,No
+17,Morelos,Central,3,2017,No
+18,Nayarit,Sur,3,2017,No
+19,Nuevo Leon,Noreste,3,2017,No
+20,Oaxaca,Sur,3,2017,No
+21,Puebla,Central,3,2017,No
+22,Queretaro,Sur,3,2017,No
+23,Quintana Roo,Peninsular,3,2017,No
+24,San Luis Potosi,Noreste,3,2017,No
+25,Sinaloa,Noroeste,3,2017,No
+26,Sonora,Noroeste,3,2017,No
+27,Tabasco,Sur,3,2017,No
+28,Tamaulipas,Noreste,3,2017,No
+29,Tlaxcala,Central,3,2017,No
+30,Veracruz,Sur,3,2017,No
+31,Yucatan,Peninsular,3,2017,No
+32,Zacatecas,Norte,3,2017,No
+1,Aguascalientes,Sur,4,2017,Yes
+2,Baja California,Baja California,4,2017,No
+3,Baja California Sur,Baja California Sur,4,2017,Yes
+4,Campeche,Peninsular,4,2017,Yes
+5,Coahuila,Noreste,4,2017,Yes
+6,Colima,Sur,4,2017,Yes
+7,Chiapas,Sur,4,2017,Yes
+8,Chihuahua,Norte,4,2017,No
+9,Mexico City,Central,4,2017,Yes
+10,Durango,Norte,4,2017,No
+11,Guanajuato,Sur,4,2017,Yes
+12,Guerrero,Sur,4,2017,Yes
+13,Hidalgo,Central,4,2017,Yes
+14,Jalisco,Sur,4,2017,Yes
+15,Mexico,Central,4,2017,Yes
+16,Michoacan,Sur,4,2017,Yes
+17,Morelos,Central,4,2017,Yes
+18,Nayarit,Sur,4,2017,Yes
+19,Nuevo Leon,Noreste,4,2017,Yes
+20,Oaxaca,Sur,4,2017,Yes
+21,Puebla,Central,4,2017,Yes
+22,Queretaro,Sur,4,2017,Yes
+23,Quintana Roo,Peninsular,4,2017,Yes
+24,San Luis Potosi,Noreste,4,2017,Yes
+25,Sinaloa,Noroeste,4,2017,No
+26,Sonora,Noroeste,4,2017,No
+27,Tabasco,Sur,4,2017,Yes
+28,Tamaulipas,Noreste,4,2017,Yes
+29,Tlaxcala,Central,4,2017,Yes
+30,Veracruz,Sur,4,2017,Yes
+31,Yucatan,Peninsular,4,2017,Yes
+32,Zacatecas,Norte,4,2017,No
+1,Aguascalientes,Sur,5,2017,Yes
+2,Baja California,Baja California,5,2017,Yes
+3,Baja California Sur,Baja California Sur,5,2017,Yes
+4,Campeche,Peninsular,5,2017,Yes
+5,Coahuila,Noreste,5,2017,Yes
+6,Colima,Sur,5,2017,Yes
+7,Chiapas,Sur,5,2017,Yes
+8,Chihuahua,Norte,5,2017,Yes
+9,Mexico City,Central,5,2017,Yes
+10,Durango,Norte,5,2017,Yes
+11,Guanajuato,Sur,5,2017,Yes
+12,Guerrero,Sur,5,2017,Yes
+13,Hidalgo,Central,5,2017,Yes
+14,Jalisco,Sur,5,2017,Yes
+15,Mexico,Central,5,2017,Yes
+16,Michoacan,Sur,5,2017,Yes
+17,Morelos,Central,5,2017,Yes
+18,Nayarit,Sur,5,2017,Yes
+19,Nuevo Leon,Noreste,5,2017,Yes
+20,Oaxaca,Sur,5,2017,Yes
+21,Puebla,Central,5,2017,Yes
+22,Queretaro,Sur,5,2017,Yes
+23,Quintana Roo,Peninsular,5,2017,Yes
+24,San Luis Potosi,Noreste,5,2017,Yes
+25,Sinaloa,Noroeste,5,2017,Yes
+26,Sonora,Noroeste,5,2017,Yes
+27,Tabasco,Sur,5,2017,Yes
+28,Tamaulipas,Noreste,5,2017,Yes
+29,Tlaxcala,Central,5,2017,Yes
+30,Veracruz,Sur,5,2017,Yes
+31,Yucatan,Peninsular,5,2017,Yes
+32,Zacatecas,Norte,5,2017,Yes
+1,Aguascalientes,Sur,6,2017,Yes
+2,Baja California,Baja California,6,2017,Yes
+3,Baja California Sur,Baja California Sur,6,2017,Yes
+4,Campeche,Peninsular,6,2017,Yes
+5,Coahuila,Noreste,6,2017,Yes
+6,Colima,Sur,6,2017,Yes
+7,Chiapas,Sur,6,2017,Yes
+8,Chihuahua,Norte,6,2017,Yes
+9,Mexico City,Central,6,2017,Yes
+10,Durango,Norte,6,2017,Yes
+11,Guanajuato,Sur,6,2017,Yes
+12,Guerrero,Sur,6,2017,Yes
+13,Hidalgo,Central,6,2017,Yes
+14,Jalisco,Sur,6,2017,Yes
+15,Mexico,Central,6,2017,Yes
+16,Michoacan,Sur,6,2017,Yes
+17,Morelos,Central,6,2017,Yes
+18,Nayarit,Sur,6,2017,Yes
+19,Nuevo Leon,Noreste,6,2017,Yes
+20,Oaxaca,Sur,6,2017,Yes
+21,Puebla,Central,6,2017,Yes
+22,Queretaro,Sur,6,2017,Yes
+23,Quintana Roo,Peninsular,6,2017,Yes
+24,San Luis Potosi,Noreste,6,2017,Yes
+25,Sinaloa,Noroeste,6,2017,Yes
+26,Sonora,Noroeste,6,2017,Yes
+27,Tabasco,Sur,6,2017,Yes
+28,Tamaulipas,Noreste,6,2017,Yes
+29,Tlaxcala,Central,6,2017,Yes
+30,Veracruz,Sur,6,2017,Yes
+31,Yucatan,Peninsular,6,2017,Yes
+32,Zacatecas,Norte,6,2017,Yes
+1,Aguascalientes,Sur,7,2017,Yes
+2,Baja California,Baja California,7,2017,Yes
+3,Baja California Sur,Baja California Sur,7,2017,Yes
+4,Campeche,Peninsular,7,2017,Yes
+5,Coahuila,Noreste,7,2017,Yes
+6,Colima,Sur,7,2017,Yes
+7,Chiapas,Sur,7,2017,Yes
+8,Chihuahua,Norte,7,2017,Yes
+9,Mexico City,Central,7,2017,Yes
+10,Durango,Norte,7,2017,Yes
+11,Guanajuato,Sur,7,2017,Yes
+12,Guerrero,Sur,7,2017,Yes
+13,Hidalgo,Central,7,2017,Yes
+14,Jalisco,Sur,7,2017,Yes
+15,Mexico,Central,7,2017,Yes
+16,Michoacan,Sur,7,2017,Yes
+17,Morelos,Central,7,2017,Yes
+18,Nayarit,Sur,7,2017,Yes
+19,Nuevo Leon,Noreste,7,2017,Yes
+20,Oaxaca,Sur,7,2017,Yes
+21,Puebla,Central,7,2017,Yes
+22,Queretaro,Sur,7,2017,Yes
+23,Quintana Roo,Peninsular,7,2017,Yes
+24,San Luis Potosi,Noreste,7,2017,Yes
+25,Sinaloa,Noroeste,7,2017,Yes
+26,Sonora,Noroeste,7,2017,Yes
+27,Tabasco,Sur,7,2017,Yes
+28,Tamaulipas,Noreste,7,2017,Yes
+29,Tlaxcala,Central,7,2017,Yes
+30,Veracruz,Sur,7,2017,Yes
+31,Yucatan,Peninsular,7,2017,Yes
+32,Zacatecas,Norte,7,2017,Yes
+1,Aguascalientes,Sur,8,2017,Yes
+2,Baja California,Baja California,8,2017,Yes
+3,Baja California Sur,Baja California Sur,8,2017,Yes
+4,Campeche,Peninsular,8,2017,Yes
+5,Coahuila,Noreste,8,2017,Yes
+6,Colima,Sur,8,2017,Yes
+7,Chiapas,Sur,8,2017,Yes
+8,Chihuahua,Norte,8,2017,Yes
+9,Mexico City,Central,8,2017,Yes
+10,Durango,Norte,8,2017,Yes
+11,Guanajuato,Sur,8,2017,Yes
+12,Guerrero,Sur,8,2017,Yes
+13,Hidalgo,Central,8,2017,Yes
+14,Jalisco,Sur,8,2017,Yes
+15,Mexico,Central,8,2017,Yes
+16,Michoacan,Sur,8,2017,Yes
+17,Morelos,Central,8,2017,Yes
+18,Nayarit,Sur,8,2017,Yes
+19,Nuevo Leon,Noreste,8,2017,Yes
+20,Oaxaca,Sur,8,2017,Yes
+21,Puebla,Central,8,2017,Yes
+22,Queretaro,Sur,8,2017,Yes
+23,Quintana Roo,Peninsular,8,2017,Yes
+24,San Luis Potosi,Noreste,8,2017,Yes
+25,Sinaloa,Noroeste,8,2017,Yes
+26,Sonora,Noroeste,8,2017,Yes
+27,Tabasco,Sur,8,2017,Yes
+28,Tamaulipas,Noreste,8,2017,Yes
+29,Tlaxcala,Central,8,2017,Yes
+30,Veracruz,Sur,8,2017,Yes
+31,Yucatan,Peninsular,8,2017,Yes
+32,Zacatecas,Norte,8,2017,Yes
+1,Aguascalientes,Sur,9,2017,Yes
+2,Baja California,Baja California,9,2017,Yes
+3,Baja California Sur,Baja California Sur,9,2017,Yes
+4,Campeche,Peninsular,9,2017,Yes
+5,Coahuila,Noreste,9,2017,Yes
+6,Colima,Sur,9,2017,Yes
+7,Chiapas,Sur,9,2017,Yes
+8,Chihuahua,Norte,9,2017,Yes
+9,Mexico City,Central,9,2017,Yes
+10,Durango,Norte,9,2017,Yes
+11,Guanajuato,Sur,9,2017,Yes
+12,Guerrero,Sur,9,2017,Yes
+13,Hidalgo,Central,9,2017,Yes
+14,Jalisco,Sur,9,2017,Yes
+15,Mexico,Central,9,2017,Yes
+16,Michoacan,Sur,9,2017,Yes
+17,Morelos,Central,9,2017,Yes
+18,Nayarit,Sur,9,2017,Yes
+19,Nuevo Leon,Noreste,9,2017,Yes
+20,Oaxaca,Sur,9,2017,Yes
+21,Puebla,Central,9,2017,Yes
+22,Queretaro,Sur,9,2017,Yes
+23,Quintana Roo,Peninsular,9,2017,Yes
+24,San Luis Potosi,Noreste,9,2017,Yes
+25,Sinaloa,Noroeste,9,2017,Yes
+26,Sonora,Noroeste,9,2017,Yes
+27,Tabasco,Sur,9,2017,Yes
+28,Tamaulipas,Noreste,9,2017,Yes
+29,Tlaxcala,Central,9,2017,Yes
+30,Veracruz,Sur,9,2017,Yes
+31,Yucatan,Peninsular,9,2017,Yes
+32,Zacatecas,Norte,9,2017,Yes
+1,Aguascalientes,Sur,10,2017,No
+2,Baja California,Baja California,10,2017,Yes
+3,Baja California Sur,Baja California Sur,10,2017,No
+4,Campeche,Peninsular,10,2017,No
+5,Coahuila,Noreste,10,2017,No
+6,Colima,Sur,10,2017,No
+7,Chiapas,Sur,10,2017,No
+8,Chihuahua,Norte,10,2017,Yes
+9,Mexico City,Central,10,2017,No
+10,Durango,Norte,10,2017,Yes
+11,Guanajuato,Sur,10,2017,No
+12,Guerrero,Sur,10,2017,No
+13,Hidalgo,Central,10,2017,No
+14,Jalisco,Sur,10,2017,No
+15,Mexico,Central,10,2017,No
+16,Michoacan,Sur,10,2017,No
+17,Morelos,Central,10,2017,No
+18,Nayarit,Sur,10,2017,No
+19,Nuevo Leon,Noreste,10,2017,No
+20,Oaxaca,Sur,10,2017,No
+21,Puebla,Central,10,2017,No
+22,Queretaro,Sur,10,2017,No
+23,Quintana Roo,Peninsular,10,2017,No
+24,San Luis Potosi,Noreste,10,2017,No
+25,Sinaloa,Noroeste,10,2017,Yes
+26,Sonora,Noroeste,10,2017,Yes
+27,Tabasco,Sur,10,2017,No
+28,Tamaulipas,Noreste,10,2017,No
+29,Tlaxcala,Central,10,2017,No
+30,Veracruz,Sur,10,2017,No
+31,Yucatan,Peninsular,10,2017,No
+32,Zacatecas,Norte,10,2017,Yes
+1,Aguascalientes,Sur,11,2017,No
+2,Baja California,Baja California,11,2017,No
+3,Baja California Sur,Baja California Sur,11,2017,No
+4,Campeche,Peninsular,11,2017,No
+5,Coahuila,Noreste,11,2017,No
+6,Colima,Sur,11,2017,No
+7,Chiapas,Sur,11,2017,No
+8,Chihuahua,Norte,11,2017,No
+9,Mexico City,Central,11,2017,No
+10,Durango,Norte,11,2017,No
+11,Guanajuato,Sur,11,2017,No
+12,Guerrero,Sur,11,2017,No
+13,Hidalgo,Central,11,2017,No
+14,Jalisco,Sur,11,2017,No
+15,Mexico,Central,11,2017,No
+16,Michoacan,Sur,11,2017,No
+17,Morelos,Central,11,2017,No
+18,Nayarit,Sur,11,2017,No
+19,Nuevo Leon,Noreste,11,2017,No
+20,Oaxaca,Sur,11,2017,No
+21,Puebla,Central,11,2017,No
+22,Queretaro,Sur,11,2017,No
+23,Quintana Roo,Peninsular,11,2017,No
+24,San Luis Potosi,Noreste,11,2017,No
+25,Sinaloa,Noroeste,11,2017,No
+26,Sonora,Noroeste,11,2017,No
+27,Tabasco,Sur,11,2017,No
+28,Tamaulipas,Noreste,11,2017,No
+29,Tlaxcala,Central,11,2017,No
+30,Veracruz,Sur,11,2017,No
+31,Yucatan,Peninsular,11,2017,No
+32,Zacatecas,Norte,11,2017,No
+1,Aguascalientes,Sur,12,2017,No
+2,Baja California,Baja California,12,2017,No
+3,Baja California Sur,Baja California Sur,12,2017,No
+4,Campeche,Peninsular,12,2017,No
+5,Coahuila,Noreste,12,2017,No
+6,Colima,Sur,12,2017,No
+7,Chiapas,Sur,12,2017,No
+8,Chihuahua,Norte,12,2017,No
+9,Mexico City,Central,12,2017,No
+10,Durango,Norte,12,2017,No
+11,Guanajuato,Sur,12,2017,No
+12,Guerrero,Sur,12,2017,No
+13,Hidalgo,Central,12,2017,No
+14,Jalisco,Sur,12,2017,No
+15,Mexico,Central,12,2017,No
+16,Michoacan,Sur,12,2017,No
+17,Morelos,Central,12,2017,No
+18,Nayarit,Sur,12,2017,No
+19,Nuevo Leon,Noreste,12,2017,No
+20,Oaxaca,Sur,12,2017,No
+21,Puebla,Central,12,2017,No
+22,Queretaro,Sur,12,2017,No
+23,Quintana Roo,Peninsular,12,2017,No
+24,San Luis Potosi,Noreste,12,2017,No
+25,Sinaloa,Noroeste,12,2017,No
+26,Sonora,Noroeste,12,2017,No
+27,Tabasco,Sur,12,2017,No
+28,Tamaulipas,Noreste,12,2017,No
+29,Tlaxcala,Central,12,2017,No
+30,Veracruz,Sur,12,2017,No
+31,Yucatan,Peninsular,12,2017,No
+32,Zacatecas,Norte,12,2017,No

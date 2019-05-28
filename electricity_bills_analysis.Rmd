@@ -1,0 +1,495 @@
+---
+title: "Electricity Bills Analysis - ENCEVI 2018"
+author: "Mauricio Hernandez"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    code_folding: hide
+    self_contained: true
+    thumbnails: true
+    lightbox: false
+    highlight: tango
+---
+
+```{r}
+#Remove all objects from current workspace and call garbage collector
+rm(list=ls())
+gc()
+```
+
+```{r sh, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+UsePackage <- function(p) {
+  # Installs the package if it hasn't already been installed.
+  # Includes the library into the session, if the package has been installed.
+  #
+  # Args:
+  #   p: package name
+  #   installed.packages(): The other vector. x and y must have the same length, greater 
+  #                         than one, with no missing values.
+  # 
+  # Returns:
+  #   N/A
+  if (!is.element(p, installed.packages()[,1])){
+    install.packages(p, dep = TRUE)
+  }
+  require(p, character.only = TRUE)
+}
+```
+
+```{r knitr_init, echo=FALSE, results="asis", cache=FALSE, warning = FALSE}
+#options(max.print = "75")
+UsePackage("knitr")
+opts_chunk$set(echo = FALSE,
+	             cache = FALSE,
+               prompt = FALSE,
+               tidy = FALSE,
+               comment = NA,
+               message = FALSE,
+               warning = FALSE)
+opts_knit$set(width = 100)
+```
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+#devtools::install_github("ropensci/plotly")
+```
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+Sys.setenv("plotly_username" = "mauricioh2")
+Sys.setenv("plotly_api_key" = "CzXpBQKn6zRQj1ExEd5O")
+```
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+##Load and attach add-on packages
+UsePackage('ProjectTemplate')
+UsePackage('stringr')
+UsePackage('psych')
+UsePackage('ggplot2')
+UsePackage('dplyr') 
+UsePackage('reshape2')
+UsePackage('plotly')
+UsePackage('processx')
+UsePackage('doBy')
+UsePackage('foreign')   
+UsePackage('survey')
+UsePackage('reticulate') 
+<<<<<<< HEAD
+UsePackage('tidyverse')
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+
+#UsePackage('data.table')
+#UsePackage('reshape')
+#UsePackage('dplyr')
+#UsePackage('openxlsx')
+```
+
+##Loading datasets
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+#This table contains characteristics on the main final uses of energy in the 
+#dwellings according to the socioeconomic characteristics of the households
+<<<<<<< HEAD
+df.encevi <- read.csv("input/encevi.csv")
+
+#This table contains the characteristics of the dwellings inhabited by the
+#members of the households surveyed.
+df.dwelling <- read.csv("input/vivienda.csv")
+
+#In this table are contained the characteristics of the households that 
+#inhabit the dwellings.
+df.household <- read.csv("input/hogar.csv")
+
+#importing data of municipalities from ENCEVI 2018
+df.munic <- read.dbf("input/ENCEVI_CLVE_ENT_MUN.dbf", FALSE)
+
+#importing data
+df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
+
+#importing 
+#df.agem.codes <- read.csv("input/AGEEML_2019528151677.csv", sep=",",colClasses=c(rep("factor",5)))
+df.agem.codes <- read.dbf("input/AGEEML_20195281547102.dbf", FALSE)
+```
+
+```{r}
+names(df.munic)<-tolower(colnames(df.munic))
+
+names(df.agem.codes)<-tolower(colnames(df.agem.codes))
+```
+
+
+```{r}
+df.munic <- unite(df.munic, "agem", c("entidad","municipio"), 
+                  sep = "", remove = FALSE)
+
+df.agem.codes <- unite(df.agem.codes, "agem", c("cve_ent","cve_mun"), 
+                  sep = "", remove = FALSE)
+```
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+df.munic <- merge(df.munic, df.agem.codes, by="agem")
+```
+
+```{r}
+#table(df.munic$agem)
+df.munic$agem <- as.numeric(df.munic$agem)
+df.agem.codes$agem <- as.numeric(df.agem.codes$agem)
+=======
+df.encevi <- read.csv("input/data_encevi_2018/encevi.csv")
+
+#This table contains the characteristics of the dwellings inhabited by the
+#members of the households surveyed.
+df.dwelling <- read.csv("input/data_encevi_2018/vivienda.csv")
+
+#In this table are contained the characteristics of the households that 
+#inhabit the dwellings.
+df.household <- read.csv("input/data_encevi_2018/hogar.csv")
+
+df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
+
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+```
+
+```{r}
+names(df.encevi) <- tolower(colnames(df.encevi))  
+names(df.dwelling) <- tolower(colnames(df.dwelling)) 
+names(df.household) <- tolower(colnames(df.household)) 
+#names(lightbulbs)<-tolower(colnames(lightbulbs)) 
+
+#Reaname first column as folio. This corrects a bug in the command
+colnames(df.encevi)[1] <- "folio"
+colnames(df.dwelling)[1] <- "folio"
+colnames(df.household)[1] <- "folio"
+colnames(df.dwelling)[colnames(df.dwelling)=="entidad"] <- "state.id"
+```
+                                 
+##Merging ENCEVI and Dwelling datasets
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+df.encevi.dwell <- merge(df.encevi, df.dwelling, by="folio")
+```
+
+```{r}
+df.encevi.dwell$region.f <- factor(df.encevi.dwell$region,
+                                           levels = c(1, 2, 3),
+                                           labels = c("Extreme hot", "Temperate", "Tropical"))
+
+df.encevi.dwell$tarif.f <- factor(df.encevi.dwell$tipo_tarif,
+                                           levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                                           labels = c("02", "01", "1A", "1B", "1C", "1D", "1E", "1F", "DAC", "Don't know"))
+
+df.encevi.dwell$state.f <- factor(df.encevi.dwell$state.id,
+                                  levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", 
+                                             "12", "13", "14", "15", "16", "17", "18", "19", "20", 
+                                             "21", "22", "23", "24", "25", "26", "27", "28", "29", 
+                                             "30", "31", "32"),
+                                  labels = c("Aguascalientes", "Baja California", "Baja California Sur", 
+                                  "Campeche", "Coahuila", "Colima", "Chiapas", "Chihuahua", "Mexico City", 
+                                  "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Mexico", "Michoacan", 
+                                  "Morelos", "Nayarit", "NuevoLeon", "Oaxaca", "Puebla", "Queretaro", "Quintana Roo", 
+                                  "San Luis Potosi", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", 
+                                  "Veracruz", "Yucatan", "Zacatecas"))
+
+```
+
+
+
+                                 
+
+```{r}
+df.summer.months <- subset(df.summer.months, year==2017, 
+                        select=c('state.id', 'month', 'summer'))
+#df.encevi.dwell <- merge(df.encevi.dwell, df.summer.months, by="state.id")
+```
+
+##Dwellings Connected to the Grid by Region
+
+Number of dwellings & number of dwellings by region
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+# Survey design construction, this computes the statistical errors
+# Construye el Diseño de la Encuesta (mmc) para calcular las Precisiones Estadísticas 
+mmc <- svydesign(id=~upm, strata=~est_dis, data=df.encevi.dwell, weights=~ factor_sem)
+
+df.encevi.dwell$dummy.house <- 1
+
+# Estimación total de viviendas particulares habitadas 
+tb.dwell <- svytotal(df.encevi.dwell$dummy.house, mmc)
+
+total.dwell <- sum(df.encevi.dwell$factor_sem)
+total.dwell
+```
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+# Estimación por Región del total de viviendas particulares habitadas 
+tb.dwell.region <- svyby(~dummy.house, by=~region.f, mmc, svytotal)  
+#Pr01 <- svyby(~a01, by=~REGION, MMC, svytotal)  
+ea01n <- tb.dwell[[1]]  # Estimación puntual 
+er01n <- t(tb.dwell.region[2]) # Estimación puntual-Región 
+ea01e <- SE(tb.dwell)   # Error estándar 
+er01e <- t(data.frame(SE(tb.dwell.region)))  # Error estándar-Región 
+
+tb.dwell
+tb.dwell.region
+```
+
+Number of dwellings connected to the grid
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+#Get Dwellings with Insulaiton
+
+df.encevi.dwell$grid <- ifelse(df.encevi.dwell$electri %in% "1", 1 ,0) 
+#Total dwellings with insulation
+total.dwell.grid <- sum(df.encevi.dwell$grid * df.encevi.dwell$factor_sem)
+
+total.dwell.grid
+```
+
+Number of dwellings connected to the grid by region
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+
+# Survey design construction, this computes the statistical errors
+# Construye el Diseño de la Encuesta (mmc) para calcular las Precisiones Estadísticas 
+mmc <- svydesign(id=~upm, strata=~est_dis, data=df.encevi.dwell, weights=~ factor_sem)
+
+# Estimación total de viviendas particulares habitadas 
+tb.dwell <- svytotal(df.encevi.dwell$dummy.house, mmc)
+
+tb.grid.region <- svyby(~dummy.house, by=~region.f+grid, mmc, svytotal) 
+colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <-"dwellings"
+
+tb.grid.region <- merge(tb.grid.region, tb.dwell.region[,c("region.f","dummy.house")], by="region.f")
+colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <- "dwellings.region"
+
+tb.grid.region <- transform(tb.grid.region, percent.grid = tb.grid.region$dwellings / tb.grid.region$dwellings.region)
+tb.grid.region
+```
+
+##Electricity bill dates
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+df.encevi.dwell$inicia1[df.encevi.dwell$inicia1 == 99] <-  NA 
+df.encevi.dwell$mes_inic1[df.encevi.dwell$mes_inic1 == 99] <-  NA
+df.encevi.dwell$inicia2[df.encevi.dwell$inicia2 == 99] <-  NA
+df.encevi.dwell$mes_inic2[df.encevi.dwell$mes_inic2 == 99] <-  NA
+df.encevi.dwell$final1[df.encevi.dwell$final1 == 99] <-  NA 
+df.encevi.dwell$mes_final1[df.encevi.dwell$mes_final1 == 99] <-  NA
+df.encevi.dwell$final2[df.encevi.dwell$final2 == 99] <- NA
+df.encevi.dwell$mes_final2[df.encevi.dwell$mes_final2 == 99]  <-  NA
+
+df.encevi.dwell$cons_med1[df.encevi.dwell$cons_med1 >= 98888 ] <- NA
+df.encevi.dwell$cons_med2[df.encevi.dwell$cons_med2 >= 98888 ] <- NA
+
+#df.encevi.dwell$inicia1 <- as.integer(df.encevi.dwell$inicia1)
+```
+
+
+Calculating days of consumption for first electricity bill
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+df.encevi.dwell$bill.ini.date1 <- NA
+df.encevi.dwell$bill.end.date1 <- NA
+
+# The data was obtained from January 2018 to June 2018.
+# So the bills could be from 2017 or 2018.
+# As the survey does not report the year of the electricity bill, it is calculated here
+df.encevi.dwell$year_ini1 <- "2018"
+df.encevi.dwell$year_end1 <- "2018"
+
+# Case 1. If the initial period of the bill is from june to december, 
+# it is assumed that the year of the initial period is 2017
+df.encevi.dwell$year_ini1[df.encevi.dwell$mes_inic1 >= 6] <- 2017
+
+# Case 2. If the final period of the bill is from july to december, 
+# it is assumed that the year of the final period is 2017
+df.encevi.dwell$year_end1[df.encevi.dwell$mes_final1 >= 7] <- 2017
+
+# Case 3. If the initia month period of the bill is higher than the final month, 
+# it is assumed that the year of the initial period is 2017
+df.encevi.dwell$year_ini1[df.encevi.dwell$mes_inic1 > df.encevi.dwell$mes_final1] <- 2017
+
+df.encevi.dwell$bill.ini.date1 <-  str_replace_all(paste(df.encevi.dwell$mes_inic1, "-" , 
+                                                         df.encevi.dwell$inicia1, "-", 
+                                                         df.encevi.dwell$year_ini1),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.end.date1 <-  str_replace_all(paste(df.encevi.dwell$mes_final1, "-" , 
+                                                         df.encevi.dwell$final1, "-", 
+                                                         df.encevi.dwell$year_end1),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.ini.date1 <- as.Date(as.character(df.encevi.dwell$bill.ini.date1), 
+                                          format="%m-%d-%Y")
+df.encevi.dwell$bill.end.date1 <- as.Date(as.character(df.encevi.dwell$bill.end.date1), 
+                                          format="%m-%d-%Y")
+df.encevi.dwell$bill.days1 <- as.integer((df.encevi.dwell$bill.end.date1 - df.encevi.dwell$bill.ini.date1))
+
+
+# After obtaining the number of days of the period in the electricity bill. 
+# There are still some special cases that are corrected here.
+# Case 4. If the period in the electricity bill is longer than 1 year, the initial year is assumed to be 2018
+df.encevi.dwell$year_ini1[df.encevi.dwell$bill.days1 >= 365 & 
+                            (df.encevi.dwell$mes_inic1 <= df.encevi.dwell$mes_final1)] <- 2018
+
+# Case 5. If the period in the electricity bill is negative, the initial year is assumed to be 2017
+df.encevi.dwell$year_ini1[df.encevi.dwell$bill.days1 < 0] <- 2017
+
+df.encevi.dwell$bill.end.date1 <-  str_replace_all(paste(df.encevi.dwell$mes_final1, "-" , 
+                                                         df.encevi.dwell$final1, "-", df.encevi.dwell$year_end1),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.ini.date1 <-  str_replace_all(paste(df.encevi.dwell$mes_inic1, "-" , 
+                                                         df.encevi.dwell$inicia1, "-", df.encevi.dwell$year_ini1),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.end.date1 <-  str_replace_all(paste(df.encevi.dwell$mes_final1, "-" , 
+                                                         df.encevi.dwell$final1, "-", df.encevi.dwell$year_end1),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.ini.date1 <- as.Date(as.character(df.encevi.dwell$bill.ini.date1), format="%m-%d-%Y")
+df.encevi.dwell$bill.end.date1 <- as.Date(as.character(df.encevi.dwell$bill.end.date1), format="%m-%d-%Y")
+df.encevi.dwell$bill.days1 <- as.integer((df.encevi.dwell$bill.end.date1 - df.encevi.dwell$bill.ini.date1))
+
+df.encevi.dwell$bill.days1[df.encevi.dwell$bill.days1 < 0 ] <- NA
+df.encevi.dwell$bill.days1[df.encevi.dwell$bill.days1 > 180 ] <- NA
+```
+
+
+
+Calculating days of consumption for second electricity bill
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+df.encevi.dwell$bill.ini.date2 <- NA
+df.encevi.dwell$bill.end.date2 <- NA
+
+# The data was obtained from January 2018 to June 2018.
+# So the bills could be from 2017 or 2018.
+# As the survey does not report the year of the electricity bill, it is calculated here
+df.encevi.dwell$year_ini2 <- "2018"
+df.encevi.dwell$year_end2 <- "2018"
+
+# Case 1. If the initial period of the bill is from june to december, 
+# it is assumed that the year of the initial period is 2017
+df.encevi.dwell$year_ini2[df.encevi.dwell$mes_inic2 >= 6] <- 2017
+
+# Case 2. If the final period of the bill is from july to december, 
+# it is assumed that the year of the final period is 2017
+df.encevi.dwell$year_end2[df.encevi.dwell$mes_final2 >= 7] <- 2017
+
+# Case 3. If the initia month period of the bill is higher than the final month, 
+# it is assumed that the year of the initial period is 2017
+df.encevi.dwell$year_ini2[df.encevi.dwell$mes_inic2 > df.encevi.dwell$mes_final2] <- 2017
+
+df.encevi.dwell$bill.ini.date2 <-  str_replace_all(paste(df.encevi.dwell$mes_inic2, "-" , 
+                                                         df.encevi.dwell$inicia1, "-", 
+                                                         df.encevi.dwell$year_ini2),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.end.date2 <-  str_replace_all(paste(df.encevi.dwell$mes_final2, "-" , 
+                                                         df.encevi.dwell$final1, "-", 
+                                                         df.encevi.dwell$year_end2),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.ini.date2 <- as.Date(as.character(df.encevi.dwell$bill.ini.date2), 
+                                          format="%m-%d-%Y")
+df.encevi.dwell$bill.end.date2 <- as.Date(as.character(df.encevi.dwell$bill.end.date2), 
+                                          format="%m-%d-%Y")
+df.encevi.dwell$bill.days2 <- as.integer((df.encevi.dwell$bill.end.date2 - df.encevi.dwell$bill.ini.date2))
+
+
+# After obtaining the number of days of the period in the electricity bill. 
+# There are still some special cases that are corrected here.
+# Case 4. If the period in the electricity bill is longer than 1 year, the initial year is assumed to be 2018
+df.encevi.dwell$year_ini2[df.encevi.dwell$bill.days2 >= 365 & 
+                            (df.encevi.dwell$mes_inic2 <= df.encevi.dwell$mes_final2)] <- 2018
+
+# Case 5. If the period in the electricity bill is negative, the initial year is assumed to be 2017
+df.encevi.dwell$year_ini2[df.encevi.dwell$bill.days2 < 0] <- 2017
+
+df.encevi.dwell$bill.end.date2 <-  str_replace_all(paste(df.encevi.dwell$mes_final2, "-" , 
+                                                         df.encevi.dwell$final1, "-", df.encevi.dwell$year_end2),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.ini.date2 <-  str_replace_all(paste(df.encevi.dwell$mes_inic2, "-" , 
+                                                         df.encevi.dwell$inicia1, "-", df.encevi.dwell$year_ini2),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.end.date2 <-  str_replace_all(paste(df.encevi.dwell$mes_final2, "-" , 
+                                                         df.encevi.dwell$final1, "-", df.encevi.dwell$year_end2),
+                                                   pattern=" ", repl="")
+
+df.encevi.dwell$bill.ini.date2 <- as.Date(as.character(df.encevi.dwell$bill.ini.date2), format="%m-%d-%Y")
+df.encevi.dwell$bill.end.date2 <- as.Date(as.character(df.encevi.dwell$bill.end.date2), format="%m-%d-%Y")
+df.encevi.dwell$bill.days2 <- as.integer((df.encevi.dwell$bill.end.date2 - df.encevi.dwell$bill.ini.date2))
+
+df.encevi.dwell$bill.days2[df.encevi.dwell$bill.days2 < 0 ] <- NA
+df.encevi.dwell$bill.days2[df.encevi.dwell$bill.days2 > 180 ] <- NA
+```
+
+```{r}
+describe(df.encevi.dwell$bill.days1)
+describe(df.encevi.dwell$bill.days2)
+```
+
+
+```{r}
+attach(df.encevi.dwell)
+#df.bill.test <- subset(df.encevi.dwell, bill.days1 >= 25, 
+#                        select=c('bill.days1', 'mes_inic1', 'final1', 'mes_final1', 
+#                                 'inicia1', 'bill.ini.date1', 'bill.end.date1', 'cons_med1')) 
+
+df.bill.test2 <- subset(df.encevi.dwell, bill.days2 >= 0, 
+                        select=c('bill.days1', 'bill.days2', 'bill.ini.date1', 
+                                 'bill.ini.date2', 'bill.end.date1',
+                                 'bill.end.date2', 'cons_med1', 'cons_med2', 
+                                 'cond_energ', 'local_com', 'elect_loc'))
+detach(df.encevi.dwell)
+#sort(df.bill.error$bill.days1,decreasing=FALSE)
+df.bill.test2[order(-df.bill.test2$bill.days2),]
+
+#df.encevi.dwell[order(df.encevi.dwell$bill.days2),]
+```
+
+https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
+
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+attach(df.encevi.dwell)
+df.bill.error <- subset(df.encevi.dwell, bill.days1 < 91, 
+                        select=c('bill.days1', 'mes_inic1', 'final1', 'mes_final1', 
+                                 'inicia1', 'bill.ini.date1', 'bill.end.date1', 'cons_med1'))
+detach(df.encevi.dwell)
+#sort(df.bill.error$bill.days1,decreasing=FALSE)
+df.bill.error[order(df.bill.error$bill.days1),]
+```
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+attach(df.encevi.dwell)
+#df.bill.test <- subset(df.encevi.dwell, bill.days1 >= 25, 
+#                        select=c('bill.days1', 'mes_inic1', 'final1', 'mes_final1', 
+#                                 'inicia1', 'bill.ini.date1', 'bill.end.date1', 'cons_med1')) 
+
+df.bill.test <- subset(df.encevi.dwell, bill.days1 >= 25 & local_com == 2, 
+                        select=c('bill.days1', 'bill.ini.date1', 'bill.end.date1', 
+                                 'cons_med1', 'cond_energ', 'local_com', 'elect_loc', 'cons_med2'))
+
+detach(df.encevi.dwell)
+#sort(df.bill.error$bill.days1,decreasing=FALSE)
+#df.bill.test$cons.day <-  df.bill.test /
+df.bill.test <- transform(df.bill.test, bill.cons.day = df.bill.test$cons_med1 / df.bill.test$bill.days1)
+
+df.bill.test[order(df.bill.test$bill.cons.day),]
+
+
+describe(df.bill.test$bill.cons.day)
+```
+
+# Tariffs
+Reference: http://www.cfe.mx/tarifas/Pages/Tarifas.aspx
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+prop.table(table(df.encevi.dwell$tarif.f))*100
+```
+
+```{r}
+table(df.encevi.dwell$state.f, df.encevi.dwell$tarif.f)
+```
+
+```{r}
+#source("./EjemploCuadroINEGI.r")
+
+table(df.encevi.dwell$entidad)
+```
+
+
+
+
