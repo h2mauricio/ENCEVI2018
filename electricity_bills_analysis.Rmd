@@ -72,10 +72,7 @@ UsePackage('doBy')
 UsePackage('foreign')   
 UsePackage('survey')
 UsePackage('reticulate') 
-<<<<<<< HEAD
 UsePackage('tidyverse')
-=======
->>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
 
 #UsePackage('data.table')
 #UsePackage('reshape')
@@ -87,7 +84,6 @@ UsePackage('tidyverse')
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 #This table contains characteristics on the main final uses of energy in the 
 #dwellings according to the socioeconomic characteristics of the households
-<<<<<<< HEAD
 df.encevi <- read.csv("input/encevi.csv")
 
 #This table contains the characteristics of the dwellings inhabited by the
@@ -98,54 +94,20 @@ df.dwelling <- read.csv("input/vivienda.csv")
 #inhabit the dwellings.
 df.household <- read.csv("input/hogar.csv")
 
-#importing data of municipalities from ENCEVI 2018
-df.munic <- read.dbf("input/ENCEVI_CLVE_ENT_MUN.dbf", FALSE)
-
 #importing data
 df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
-
-#importing 
-#df.agem.codes <- read.csv("input/AGEEML_2019528151677.csv", sep=",",colClasses=c(rep("factor",5)))
-df.agem.codes <- read.dbf("input/AGEEML_20195281547102.dbf", FALSE)
 ```
 
 ```{r}
-names(df.munic)<-tolower(colnames(df.munic))
-
-names(df.agem.codes)<-tolower(colnames(df.agem.codes))
-```
-
-
-```{r}
-df.munic <- unite(df.munic, "agem", c("entidad","municipio"), 
-                  sep = "", remove = FALSE)
-
-df.agem.codes <- unite(df.agem.codes, "agem", c("cve_ent","cve_mun"), 
-                  sep = "", remove = FALSE)
-```
-
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-df.munic <- merge(df.munic, df.agem.codes, by="agem")
+# get municipality codes ordered and cleaned, result is stored in 
+# input folder, as INEGI_agem_short.csv
+Source('municipality_codes_inegi.R')
 ```
 
 ```{r}
-#table(df.munic$agem)
-df.munic$agem <- as.numeric(df.munic$agem)
-df.agem.codes$agem <- as.numeric(df.agem.codes$agem)
-=======
-df.encevi <- read.csv("input/data_encevi_2018/encevi.csv")
-
-#This table contains the characteristics of the dwellings inhabited by the
-#members of the households surveyed.
-df.dwelling <- read.csv("input/data_encevi_2018/vivienda.csv")
-
-#In this table are contained the characteristics of the households that 
-#inhabit the dwellings.
-df.household <- read.csv("input/data_encevi_2018/hogar.csv")
-
-df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
-
->>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+#importing data of municipalities from ENCEVI 2018
+df.munic.ids <- read.csv("input/INEGI_agem_short.csv")
+df.munic.ids <- subset( df.munic.ids, select = -X )
 ```
 
 ```{r}
