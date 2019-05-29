@@ -73,7 +73,10 @@ UsePackage('foreign')
 UsePackage('survey')
 UsePackage('reticulate') 
 <<<<<<< HEAD
+<<<<<<< HEAD
 UsePackage('tidyverse')
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
 =======
 >>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
 
@@ -87,6 +90,7 @@ UsePackage('tidyverse')
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 #This table contains characteristics on the main final uses of energy in the 
 #dwellings according to the socioeconomic characteristics of the households
+<<<<<<< HEAD
 <<<<<<< HEAD
 df.encevi <- read.csv("input/encevi.csv")
 
@@ -133,6 +137,8 @@ df.munic <- merge(df.munic, df.agem.codes, by="agem")
 df.munic$agem <- as.numeric(df.munic$agem)
 df.agem.codes$agem <- as.numeric(df.agem.codes$agem)
 =======
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
 df.encevi <- read.csv("input/data_encevi_2018/encevi.csv")
 
 #This table contains the characteristics of the dwellings inhabited by the
@@ -145,6 +151,9 @@ df.household <- read.csv("input/data_encevi_2018/hogar.csv")
 
 df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
 
+<<<<<<< HEAD
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+=======
 >>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
 ```
 
