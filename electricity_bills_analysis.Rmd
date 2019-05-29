@@ -73,7 +73,6 @@ UsePackage('foreign')
 UsePackage('survey')
 UsePackage('reticulate') 
 UsePackage('tidyverse')
-
 #UsePackage('data.table')
 #UsePackage('reshape')
 #UsePackage('dplyr')
@@ -101,14 +100,9 @@ df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
 ```{r}
 # get municipality codes ordered and cleaned, result is stored in 
 # input folder, as INEGI_agem_short.csv
-Source('municipality_codes_inegi.R')
+#Source('municipality_codes_inegi.R')
 ```
 
-```{r}
-#importing data of municipalities from ENCEVI 2018
-df.munic.ids <- read.csv("input/INEGI_agem_short.csv")
-df.munic.ids <- subset( df.munic.ids, select = -X )
-```
 
 ```{r}
 names(df.encevi) <- tolower(colnames(df.encevi))  
@@ -127,6 +121,7 @@ colnames(df.dwelling)[colnames(df.dwelling)=="entidad"] <- "state.id"
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 df.encevi.dwell <- merge(df.encevi, df.dwelling, by="folio")
 ```
+
 
 ```{r}
 df.encevi.dwell$region.f <- factor(df.encevi.dwell$region,
@@ -151,9 +146,6 @@ df.encevi.dwell$state.f <- factor(df.encevi.dwell$state.id,
 
 ```
 
-
-
-                                 
 
 ```{r}
 df.summer.months <- subset(df.summer.months, year==2017, 
