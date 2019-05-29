@@ -72,7 +72,17 @@ UsePackage('doBy')
 UsePackage('foreign')   
 UsePackage('survey')
 UsePackage('reticulate') 
+<<<<<<< HEAD
 UsePackage('tidyverse')
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+UsePackage('tidyverse')
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+>>>>>>> ecab22c2776bdc59d7057492520e5fd8f42398a3
 
 #UsePackage('data.table')
 #UsePackage('reshape')
@@ -84,6 +94,11 @@ UsePackage('tidyverse')
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 #This table contains characteristics on the main final uses of energy in the 
 #dwellings according to the socioeconomic characteristics of the households
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> ecab22c2776bdc59d7057492520e5fd8f42398a3
 df.encevi <- read.csv("input/encevi.csv")
 
 #This table contains the characteristics of the dwellings inhabited by the
@@ -105,9 +120,34 @@ Source('municipality_codes_inegi.R')
 ```
 
 ```{r}
+<<<<<<< HEAD
 #importing data of municipalities from ENCEVI 2018
 df.munic.ids <- read.csv("input/INEGI_agem_short.csv")
 df.munic.ids <- subset( df.munic.ids, select = -X )
+=======
+#table(df.munic$agem)
+df.munic$agem <- as.numeric(df.munic$agem)
+df.agem.codes$agem <- as.numeric(df.agem.codes$agem)
+=======
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+df.encevi <- read.csv("input/data_encevi_2018/encevi.csv")
+
+#This table contains the characteristics of the dwellings inhabited by the
+#members of the households surveyed.
+df.dwelling <- read.csv("input/data_encevi_2018/vivienda.csv")
+
+#In this table are contained the characteristics of the households that 
+#inhabit the dwellings.
+df.household <- read.csv("input/data_encevi_2018/hogar.csv")
+
+df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
+
+<<<<<<< HEAD
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+=======
+>>>>>>> db479b2007e1f0bbe41b05ead31869e51dce7c5d
+>>>>>>> ecab22c2776bdc59d7057492520e5fd8f42398a3
 ```
 
 ```{r}
