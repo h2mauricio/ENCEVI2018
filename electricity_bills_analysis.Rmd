@@ -75,7 +75,6 @@ UsePackage('reticulate')
 UsePackage('tidyverse')
 #UsePackage('data.table')
 #UsePackage('reshape')
-#UsePackage('dplyr')
 #UsePackage('openxlsx')
 ```
 
@@ -97,19 +96,21 @@ df.household <- read.csv("input/hogar.csv")
 df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
 ```
 
-```{r}
-# get municipality codes ordered and cleaned, result is stored in 
-# input folder, as INEGI_agem_short.csv
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+# Get municipality codes ordered and cleaned, results are stored in 
+# folder "/input", as INEGI_agem_short.csv
+
 #Source('municipality_codes_inegi.R')
+df.agem.ids <- read.csv("input/INEGI_agem_short.csv")
+df.agem.ids <- subset( df.agem.ids, select = -X )
 ```
 
-
-```{r}
-names(df.encevi) <- tolower(colnames(df.encevi))  
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+names(df.encevi) <- tolower(colnames(df.encevi))
 names(df.dwelling) <- tolower(colnames(df.dwelling)) 
 names(df.household) <- tolower(colnames(df.household)) 
 
-#Reaname first column as folio. This corrects a bug in the command
+#Rename first column as folio. This piece of code corrects a bug in the command
 colnames(df.encevi)[1] <- "folio"
 colnames(df.dwelling)[1] <- "folio"
 colnames(df.household)[1] <- "folio"
@@ -121,15 +122,15 @@ colnames(df.dwelling)[colnames(df.dwelling)=="entidad"] <- "state.id"
 df.encevi.dwell <- merge(df.encevi, df.dwelling, by="folio")
 ```
 
-
-```{r}
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 df.encevi.dwell$region.f <- factor(df.encevi.dwell$region,
                                            levels = c(1, 2, 3),
                                            labels = c("Extreme hot", "Temperate", "Tropical"))
 
 df.encevi.dwell$tarif.f <- factor(df.encevi.dwell$tipo_tarif,
                                            levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-                                           labels = c("02", "01", "1A", "1B", "1C", "1D", "1E", "1F", "DAC", "Don't know"))
+                                           labels = c("02", "01", "1A", "1B", "1C", "1D", 
+                                                      "1E", "1F", "DAC", "Don't know"))
 
 df.encevi.dwell$state.f <- factor(df.encevi.dwell$state.id,
                                   levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", 
@@ -142,11 +143,9 @@ df.encevi.dwell$state.f <- factor(df.encevi.dwell$state.id,
                                   "Morelos", "Nayarit", "NuevoLeon", "Oaxaca", "Puebla", "Queretaro", "Quintana Roo", 
                                   "San Luis Potosi", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", 
                                   "Veracruz", "Yucatan", "Zacatecas"))
-
 ```
 
-
-```{r}
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 df.summer.months <- subset(df.summer.months, year==2017, 
                         select=c('state.id', 'month', 'summer'))
 #df.encevi.dwell <- merge(df.encevi.dwell, df.summer.months, by="state.id")
@@ -195,7 +194,6 @@ total.dwell.grid
 
 Number of dwellings connected to the grid by region
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-
 # Survey design construction, this computes the statistical errors
 # Construye el Diseño de la Encuesta (mmc) para calcular las Precisiones Estadísticas 
 mmc <- svydesign(id=~upm, strata=~est_dis, data=df.encevi.dwell, weights=~ factor_sem)
@@ -301,7 +299,6 @@ df.encevi.dwell$bill.days1[df.encevi.dwell$bill.days1 > 180 ] <- NA
 ```
 
 
-
 Calculating days of consumption for second electricity bill
 ```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
 df.encevi.dwell$bill.ini.date2 <- NA
@@ -371,13 +368,13 @@ df.encevi.dwell$bill.days2[df.encevi.dwell$bill.days2 < 0 ] <- NA
 df.encevi.dwell$bill.days2[df.encevi.dwell$bill.days2 > 180 ] <- NA
 ```
 
-```{r}
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 describe(df.encevi.dwell$bill.days1)
 describe(df.encevi.dwell$bill.days2)
 ```
 
 
-```{r}
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 attach(df.encevi.dwell)
 #df.bill.test <- subset(df.encevi.dwell, bill.days1 >= 25, 
 #                        select=c('bill.days1', 'mes_inic1', 'final1', 'mes_final1', 
@@ -433,16 +430,10 @@ Reference: http://www.cfe.mx/tarifas/Pages/Tarifas.aspx
 prop.table(table(df.encevi.dwell$tarif.f))*100
 ```
 
-```{r}
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 table(df.encevi.dwell$state.f, df.encevi.dwell$tarif.f)
 ```
 
-```{r}
-#source("./EjemploCuadroINEGI.r")
-
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 table(df.encevi.dwell$entidad)
 ```
-
-
-
-
