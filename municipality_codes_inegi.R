@@ -1,11 +1,13 @@
 library('dplyr') 
 library('tidyverse') 
+library('foreign')
 
 ################### Importing data ###################
 # Municipalities from ENCEVI 2018
 df.munic <- read.dbf("input/ENCEVI_CLVE_ENT_MUN.dbf", FALSE)
 # Municipalities codes from INEGI
 # Source: https://www.inegi.org.mx/app/ageeml/#
+# file can be download also from http://mauricioh2.com/files/
 df.agem.codes <- read.dbf("input/AGEEML_20195281547102.dbf", FALSE)
 
 names(df.munic)<-tolower(colnames(df.munic))
