@@ -108,7 +108,6 @@ df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
 names(df.encevi) <- tolower(colnames(df.encevi))  
 names(df.dwelling) <- tolower(colnames(df.dwelling)) 
 names(df.household) <- tolower(colnames(df.household)) 
-#names(lightbulbs)<-tolower(colnames(lightbulbs)) 
 
 #Reaname first column as folio. This corrects a bug in the command
 colnames(df.encevi)[1] <- "folio"
