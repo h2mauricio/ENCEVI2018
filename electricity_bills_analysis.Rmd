@@ -126,6 +126,18 @@ df.enc.dwell <- merge(df.encevi, df.dwelling, by="folio")
 df.enc.dwell <- merge(df.enc.dwell, df.agem.ids, by="folio")
 ```
 
+```{r}
+df.tariffs.munic <- read.table("input/tariffs_municipality.csv", sep=',', header = TRUE, as.is=T)
+df.tariffs.munic <- subset(df.tariffs.munic, select=c('agem', 'region.tariff', 'tariff', 'summer'))
+```
+
+```{r}
+df.enc.dwell <- merge(df.enc.dwell, df.tariffs.munic, by="agem", all.x = TRUE)
+```
+
+```{r}
+table(df.enc.dwell$tariff, exclude = NULL)
+```
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 df.enc.dwell$region.f <- factor(df.enc.dwell$region,
