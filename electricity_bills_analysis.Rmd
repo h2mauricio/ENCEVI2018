@@ -73,9 +73,6 @@ UsePackage('foreign')
 UsePackage('survey')
 UsePackage('reticulate') 
 UsePackage('tidyverse')
-#UsePackage('data.table')
-#UsePackage('reshape')
-#UsePackage('openxlsx')
 ```
 
 ##Loading datasets
@@ -92,17 +89,20 @@ df.dwelling <- read.csv("input/vivienda.csv")
 #inhabit the dwellings.
 df.household <- read.csv("input/hogar.csv")
 
-#importing data
+#importing data of summer months per region
 df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
 ```
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 # Get municipality codes ordered and cleaned, results are stored in 
-# folder "/input", as INEGI_agem_short.csv
+# folder "/input", as INEGI_agem_short.csv, these data was provided 
+# by INEGI and it is related to ENCEVI 2018 survey
+#source('municipality_codes_inegi.R')
 
-#Source('municipality_codes_inegi.R')
-df.agem.ids <- read.csv("input/INEGI_agem_short.csv")
-df.agem.ids <- subset(df.agem.ids, select=c(-X,-entidad,-municipio))
+# Get tariffs and municipality codes by household ids, the results are 
+# stored in folder "/input", as agem_tariff_byfolio.csv. 
+source("merge_ids_agem_tariffs.R")
+df.tariffs<- read.csv("input/agem_tariff_byfolio.csv")
 ```
 
 ## Cleaning and merging dataframes
@@ -123,20 +123,16 @@ colnames(df.dwelling)[colnames(df.dwelling)=="entidad"] <- "state.id"
 df.enc.dwell <- merge(df.encevi, df.dwelling, by="folio")
 
 # Merging encevi-dwelling dataframe with INEGI municipality codes dataframe
-df.enc.dwell <- merge(df.enc.dwell, df.agem.ids, by="folio")
+df.enc.dwell <- merge(df.enc.dwell, df.tariffs, by="folio")
 ```
 
+Storing results of tariffs per 
 ```{r}
-df.tariffs.munic <- read.table("input/tariffs_municipality.csv", sep=',', header = TRUE, as.is=T)
-df.tariffs.munic <- subset(df.tariffs.munic, select=c('agem', 'region.tariff', 'tariff', 'summer'))
-```
 
-```{r}
-df.enc.dwell <- merge(df.enc.dwell, df.tariffs.munic, by="agem", all.x = TRUE)
-```
-
-```{r}
+#write.csv(df.enc.dwell, "./output/encevi_dwelling.csv", row.names=TRUE, na="")
+#show table of tariffs with missing values
 table(df.enc.dwell$tariff, exclude = NULL)
+prop.table(table(df.enc.dwell$tariff, exclude = NULL))
 ```
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
@@ -146,7 +142,7 @@ df.enc.dwell$region.f <- factor(df.enc.dwell$region,
 
 df.enc.dwell$tarif.f <- factor(df.enc.dwell$tipo_tarif,
                                levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-                               labels = c("02", "01", "1A", "1B", "1C", "1D", 
+                               labels = c("2", "1", "1A", "1B", "1C", "1D", 
                                           "1E", "1F", "DAC", "Don't know"))
 
 df.enc.dwell$state.f <- factor(df.enc.dwell$state.id,
@@ -170,7 +166,6 @@ df.summer.months <- subset(df.summer.months, year==2017,
 
 
 ##Dwellings Connected to the Grid by Region
-
 Number of dwellings & number of dwellings by region
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 # Survey design construction, this computes the statistical errors
@@ -410,7 +405,7 @@ df.bill.test2[order(-df.bill.test2$bill.days2),]
 #df.enc.dwell[order(df.enc.dwell$bill.days2),]
 ```
 
-https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
+Reference: https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
 
 ```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
 attach(df.enc.dwell)
@@ -447,6 +442,21 @@ Reference: http://www.cfe.mx/tarifas/Pages/Tarifas.aspx
 ```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
 prop.table(table(df.enc.dwell$tarif.f))*100
 ```
+
+
+```{r}
+prop.table(table(df.enc.dwell$tariff))*100
+```
+
+```{r}
+#summary(df.enc.dwell$tariff)
+head(df.enc.dwell$tariff, 30)
+```
+
+```{r}
+head(df.enc.dwell$tarif.f, 30)
+```
+
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 table(df.enc.dwell$state.f, df.enc.dwell$tarif.f)
