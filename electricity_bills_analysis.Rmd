@@ -1,6 +1,6 @@
 ---
 title: "Electricity Bills Analysis - ENCEVI 2018"
-author: "Mauricio Hernandez"
+author: "[Mauricio Hernandez](http://mauricioh2.com)"
 date: "`r Sys.Date()`"
 output:
   rmdformats::readthedown:
@@ -45,8 +45,14 @@ opts_chunk$set(echo = FALSE,
                tidy = FALSE,
                comment = NA,
                message = FALSE,
-               warning = FALSE)
-opts_knit$set(width = 100)
+               warning = FALSE
+               )
+opts_knit$set(width = 100,
+           plain.ascii = FALSE,       # This is very handy in all Rmd documents
+           style = "rmarkdown",        # This too
+           footnote = NA,             # Avoids footnotes which would clutter the results
+           subtitle.emphasis = FALSE)  # This is a setting to experiment with - according to)
+
 ```
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
@@ -58,7 +64,7 @@ Sys.setenv("plotly_username" = "mauricioh2")
 Sys.setenv("plotly_api_key" = "CzXpBQKn6zRQj1ExEd5O")
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r load_packages, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 ##Load and attach add-on packages
 UsePackage('ProjectTemplate')
 UsePackage('stringr')
@@ -73,8 +79,14 @@ UsePackage('foreign')
 UsePackage('survey')
 UsePackage('reticulate') 
 UsePackage('tidyverse')
+UsePackage('broman') #https://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
+UsePackage("rmdformats")
+UsePackage('remotes')
+UsePackage('summarytools')
 ```
-
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+st_css()
+```
 ##Loading datasets
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 #This table contains characteristics on the main final uses of energy in the 
@@ -128,34 +140,42 @@ df.enc.dwell <- merge(df.enc.dwell, df.tariffs, by="folio")
 
 Storing results of tariffs per 
 ```{r}
-
 #write.csv(df.enc.dwell, "./output/encevi_dwelling.csv", row.names=TRUE, na="")
 #show table of tariffs with missing values
 table(df.enc.dwell$tariff, exclude = NULL)
 prop.table(table(df.enc.dwell$tariff, exclude = NULL))
 ```
 
+
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 df.enc.dwell$region.f <- factor(df.enc.dwell$region,
                                 levels = c(1, 2, 3),
                                 labels = c("Extreme hot", "Temperate", "Tropical"))
 
-df.enc.dwell$tarif.f <- factor(df.enc.dwell$tipo_tarif,
+df.enc.dwell$tipo_tarif.f <- factor(df.enc.dwell$tipo_tarif,
                                levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
                                labels = c("2", "1", "1A", "1B", "1C", "1D", 
                                           "1E", "1F", "DAC", "Don't know"))
 
 df.enc.dwell$state.f <- factor(df.enc.dwell$state.id,
-                               levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-                                          "11", "12", "13", "14", "15", "16", "17", "18", 
-                                          "19", "20", "21", "22", "23", "24", "25", "26", 
+                               levels = c("1", "2", "3", "4", "5", "6", "7", 
+                                          "8", "9", "10","11", "12", "13", "14", 
+                                          "15", "16", "17", "18", "19", "20", 
+                                          "21", "22", "23", "24", "25", "26", 
                                           "27", "28", "29", "30", "31", "32"),
-                               labels = c("Aguascalientes", "Baja California", "Baja California Sur", 
-                                  "Campeche", "Coahuila", "Colima", "Chiapas", "Chihuahua", "Mexico City", 
-                                  "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Mexico", "Michoacan", 
-                                  "Morelos", "Nayarit", "NuevoLeon", "Oaxaca", "Puebla", "Queretaro", "Quintana Roo", 
-                                  "San Luis Potosi", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", 
-                                  "Veracruz", "Yucatan", "Zacatecas"))
+                               labels = c("Aguascalientes", "Baja California", 
+                                          "Baja California Sur", "Campeche", 
+                                          "Coahuila", "Colima", "Chiapas", 
+                                          "Chihuahua", "Mexico City", 
+                                          "Durango", "Guanajuato", "Guerrero", 
+                                          "Hidalgo", "Jalisco", "Mexico", 
+                                          "Michoacan", "Morelos", "Nayarit", 
+                                          "NuevoLeon", "Oaxaca", "Puebla", 
+                                          "Queretaro", "Quintana Roo", 
+                                          "San Luis Potosi", "Sinaloa", 
+                                          "Sonora", "Tabasco", "Tamaulipas", 
+                                          "Tlaxcala", "Veracruz", "Yucatan", 
+                                          "Zacatecas"))
 ```
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
@@ -164,64 +184,77 @@ df.summer.months <- subset(df.summer.months, year==2017,
 #df.enc.dwell <- merge(df.enc.dwell, df.summer.months, by="state.id")
 ```
 
-
 ##Dwellings Connected to the Grid by Region
-Number of dwellings & number of dwellings by region
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-# Survey design construction, this computes the statistical errors
-# Construye el Diseño de la Encuesta (mmc) para calcular las Precisiones Estadísticas 
-mmc <- svydesign(id=~upm, strata=~est_dis, data=df.enc.dwell, weights=~ factor_sem)
+# Survey design construction (mmc), this computes the statistical errors
+mmc <- svydesign(id=~upm, strata=~est_dis, 
+                 data=df.enc.dwell, weights=~ factor_sem)
 
 df.enc.dwell$dummy.house <- 1
-
 # Estimación total de viviendas particulares habitadas 
 tb.dwell <- svytotal(df.enc.dwell$dummy.house, mmc)
 
 total.dwell <- sum(df.enc.dwell$factor_sem)
+sum(df.enc.dwell$dummy.house)
 total.dwell
 ```
+Number of dwellings surveyed and number of dwellings represented: `r sum(df.enc.dwell$dummy.house)` and `r total.dwell`
 
+*Dwellings Connected to the Grid by Region
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-# Estimación por Región del total de viviendas particulares habitadas 
-tb.dwell.region <- svyby(~dummy.house, by=~region.f, mmc, svytotal)  
-#Pr01 <- svyby(~a01, by=~REGION, MMC, svytotal)  
-ea01n <- tb.dwell[[1]]  # Estimación puntual 
-er01n <- t(tb.dwell.region[2]) # Estimación puntual-Región 
-ea01e <- SE(tb.dwell)   # Error estándar 
-er01e <- t(data.frame(SE(tb.dwell.region)))  # Error estándar-Región 
-
-tb.dwell
-tb.dwell.region
-```
-
-Number of dwellings connected to the grid
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-#Get Dwellings with Insulaiton
-
+#Get dwellings connected to the grid
 df.enc.dwell$grid <- ifelse(df.enc.dwell$electri %in% "1", 1 ,0) 
 #Total dwellings with insulation
 total.dwell.grid <- sum(df.enc.dwell$grid * df.enc.dwell$factor_sem)
 
+table(df.enc.dwell$grid)
 total.dwell.grid
+```
+Number of dwellings connected to the grid `r myround(total.dwell.grid, 2)`
+
+
+```{r results="asis"}
+freq(df.enc.dwell$grid, weight = df.enc.dwell$factor_sem, report.nas = FALSE, plain.ascii = FALSE, style = "simple", method = "render", headings = FALSE)
+```
+
+Number of dwellings by region
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+# Estimación por Región del total de viviendas particulares habitadas 
+#tb.dwell.region <- svyby(~dummy.house, by=~region.f, mmc, svytotal)  
+
+##Pr01 <- svyby(~a01, by=~REGION, MMC, svytotal)  
+#ea01n <- tb.dwell[[1]]  # Estimación puntual 
+#er01n <- t(tb.dwell.region[2]) # Estimación puntual-Región 
+#ea01e <- SE(tb.dwell)   # Error estándar 
+#er01e <- t(data.frame(SE(tb.dwell.region)))  # Error estándar-Región 
+
+#tb.dwell
+#tb.dwell.region
 ```
 
 Number of dwellings connected to the grid by region
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 # Survey design construction, this computes the statistical errors
 # Construye el Diseño de la Encuesta (mmc) para calcular las Precisiones Estadísticas 
-mmc <- svydesign(id=~upm, strata=~est_dis, data=df.enc.dwell, weights=~ factor_sem)
+#mmc <- svydesign(id=~upm, strata=~est_dis, data=df.enc.dwell, weights=~ factor_sem)
 
-# Estimación total de viviendas particulares habitadas 
-tb.dwell <- svytotal(df.enc.dwell$dummy.house, mmc)
+## Estimación total de viviendas particulares habitadas 
+#tb.dwell <- svytotal(df.enc.dwell$dummy.house, mmc)
 
-tb.grid.region <- svyby(~dummy.house, by=~region.f+grid, mmc, svytotal) 
-colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <-"dwellings"
+#tb.grid.region <- svyby(~dummy.house, by=~region.f+grid, mmc, svytotal) 
+#colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <-"dwellings"
 
-tb.grid.region <- merge(tb.grid.region, tb.dwell.region[,c("region.f","dummy.house")], by="region.f")
-colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <- "dwellings.region"
+#tb.grid.region <- merge(tb.grid.region, tb.dwell.region[,c("region.f","dummy.house")], by="region.f")
+#colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <- "dwellings.region"
 
-tb.grid.region <- transform(tb.grid.region, percent.grid = tb.grid.region$dwellings / tb.grid.region$dwellings.region)
-tb.grid.region
+#tb.grid.region <- transform(tb.grid.region, percent.grid = tb.grid.region$dwellings / #tb.grid.region$dwellings.region)
+#tb.grid.region
+```
+
+```{r}
+table(df.enc.dwell$grid)
+## Eliminate records of dwellings that are not connected to the grid
+df.enc.dwell <- subset(df.enc.dwell, grid==1)
 ```
 
 ##Electricity bill dates
@@ -386,7 +419,6 @@ describe(df.enc.dwell$bill.days1)
 describe(df.enc.dwell$bill.days2)
 ```
 
-
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
 attach(df.enc.dwell)
 #df.bill.test <- subset(df.enc.dwell, bill.days1 >= 25, 
@@ -401,8 +433,6 @@ df.bill.test2 <- subset(df.enc.dwell, bill.days2 >= 0,
 detach(df.enc.dwell)
 #sort(df.bill.error$bill.days1,decreasing=FALSE)
 df.bill.test2[order(-df.bill.test2$bill.days2),]
-
-#df.enc.dwell[order(df.enc.dwell$bill.days2),]
 ```
 
 Reference: https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
@@ -437,31 +467,39 @@ df.bill.test[order(df.bill.test$bill.cons.day),]
 describe(df.bill.test$bill.cons.day)
 ```
 
+
 # Tariffs
 Reference: http://www.cfe.mx/tarifas/Pages/Tarifas.aspx
 ```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
-prop.table(table(df.enc.dwell$tarif.f))*100
-```
-
-
-```{r}
-prop.table(table(df.enc.dwell$tariff))*100
-```
-
-```{r}
 #summary(df.enc.dwell$tariff)
-head(df.enc.dwell$tariff, 30)
-```
+#df.enc.dwell$tariff(is.na(df.enc.dwell$tariff)) <- "Don't know"
+df.enc.dwell$tariff <- as.character(df.enc.dwell$tariff)
+df.enc.dwell$tipo_tarif.f <- as.character(df.enc.dwell$tipo_tarif.f)
 
-```{r}
-head(df.enc.dwell$tarif.f, 30)
+df.enc.dwell$tariff[df.enc.dwell$tariff==""] <- "Don't know"
+
+df.enc.dwell$tariff.m <- recode(df.enc.dwell$tipo_tarif.f, "Don't know"= df.enc.dwell$tariff)
+#df.enc.dwell$tariff.m <- df.enc.dwell$tariff.m %>% replace_na("Don't know")
+
+df.enc.dwell$tipo_tarif.f <- factor(df.enc.dwell$tipo_tarif,
+                               levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                               labels = c("2", "1", "1A", "1B", "1C", "1D", 
+                                          "1E", "1F", "DAC", "Don't know"))
+df.enc.dwell$tariff.m <- as.factor(df.enc.dwell$tariff.m)
+df.enc.dwell$tariff.m <- factor(df.enc.dwell$tariff.m,
+                               levels = c("2", "1", "1A", "1B", "1C", "1D", 
+                                          "1E", "1F", "DAC", "Don't know"),
+                               labels = c("2", "1", "1A", "1B", "1C", "1D", 
+                                          "1E", "1F", "DAC", "Don't know"))
+prop.table(table(df.enc.dwell$tipo_tarif.f, exclude = NULL))*100
+prop.table(table(df.enc.dwell$tariff.m, exclude = NULL))*100
 ```
 
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-table(df.enc.dwell$state.f, df.enc.dwell$tarif.f)
+table(df.enc.dwell$state.f, df.enc.dwell$tariff.m, exclude = NULL)
 ```
 
 ```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-table(df.enc.dwell$entidad)
+table(df.enc.dwell$state.f, df.enc.dwell$tipo_tarif.f, exclude = NULL)
 ```
