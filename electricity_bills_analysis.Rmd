@@ -17,26 +17,11 @@ rm(list=ls())
 gc()
 ```
 
-```{r sh, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-UsePackage <- function(p) {
-  # Installs the package if it hasn't already been installed.
-  # Includes the library into the session, if the package has been installed.
-  #
-  # Args:
-  #   p: package name
-  #   installed.packages(): The other vector. x and y must have the same length, greater 
-  #                         than one, with no missing values.
-  # 
-  # Returns:
-  #   N/A
-  if (!is.element(p, installed.packages()[,1])){
-    install.packages(p, dep = TRUE)
-  }
-  require(p, character.only = TRUE)
-}
+```{r sh, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+source("./script/general_setup_functions.R")
 ```
 
-```{r knitr_init, echo=FALSE, results="asis", cache=FALSE, warning = FALSE}
+```{r knitr_init, echo=FALSE, results="asis",  message=FALSE, cache=FALSE, warning=FALSE}
 #options(max.print = "75")
 UsePackage("knitr")
 opts_chunk$set(echo = FALSE,
@@ -44,27 +29,26 @@ opts_chunk$set(echo = FALSE,
                prompt = FALSE,
                tidy = FALSE,
                comment = NA,
-               message = FALSE,
-               warning = FALSE
+               message=FALSE,
+               warning=FALSE
                )
 opts_knit$set(width = 100,
-           plain.ascii = FALSE,       # This is very handy in all Rmd documents
-           style = "rmarkdown",        # This too
+           #plain.ascii = FALSE,       # This is very handy in all Rmd documents
+           #style = "rmarkdown",        # This too
            footnote = NA,             # Avoids footnotes which would clutter the results
            subtitle.emphasis = FALSE)  # This is a setting to experiment with - according to)
-
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 #devtools::install_github("ropensci/plotly")
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 Sys.setenv("plotly_username" = "mauricioh2")
 Sys.setenv("plotly_api_key" = "CzXpBQKn6zRQj1ExEd5O")
 ```
 
-```{r load_packages, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r load_packages, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 ##Load and attach add-on packages
 UsePackage('ProjectTemplate')
 UsePackage('stringr')
@@ -83,12 +67,16 @@ UsePackage('broman') #https://kbroman.org/knitr_knutshell/pages/Rmarkdown.html
 UsePackage("rmdformats")
 UsePackage('remotes')
 UsePackage('summarytools')
+UsePackage('DT')
+UsePackage('Hmisc')
 ```
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
 st_css()
 ```
-##Loading datasets
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+
+**Loading datasets**
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 #This table contains characteristics on the main final uses of energy in the 
 #dwellings according to the socioeconomic characteristics of the households
 df.encevi <- read.csv("input/encevi.csv")
@@ -101,11 +89,11 @@ df.dwelling <- read.csv("input/vivienda.csv")
 #inhabit the dwellings.
 df.household <- read.csv("input/hogar.csv")
 
-#importing data of summer months per region
+#Importing data of summer months per region
 df.summer.months <- read.csv("input/summer_by_state_cfe_052419.csv")
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 # Get municipality codes ordered and cleaned, results are stored in 
 # folder "/input", as INEGI_agem_short.csv, these data was provided 
 # by INEGI and it is related to ENCEVI 2018 survey
@@ -117,8 +105,8 @@ source("merge_ids_agem_tariffs.R")
 df.tariffs<- read.csv("input/agem_tariff_byfolio.csv")
 ```
 
-## Cleaning and merging dataframes
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+**Cleaning and merging dataframes**
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 names(df.encevi) <- tolower(colnames(df.encevi))
 names(df.dwelling) <- tolower(colnames(df.dwelling)) 
 names(df.household) <- tolower(colnames(df.household)) 
@@ -130,7 +118,7 @@ colnames(df.household)[1] <- "folio"
 colnames(df.dwelling)[colnames(df.dwelling)=="entidad"] <- "state.id"
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 # Merging ENCEVI and Dwelling datasets
 df.enc.dwell <- merge(df.encevi, df.dwelling, by="folio")
 
@@ -138,16 +126,7 @@ df.enc.dwell <- merge(df.encevi, df.dwelling, by="folio")
 df.enc.dwell <- merge(df.enc.dwell, df.tariffs, by="folio")
 ```
 
-Storing results of tariffs per 
-```{r}
-#write.csv(df.enc.dwell, "./output/encevi_dwelling.csv", row.names=TRUE, na="")
-#show table of tariffs with missing values
-table(df.enc.dwell$tariff, exclude = NULL)
-prop.table(table(df.enc.dwell$tariff, exclude = NULL))
-```
-
-
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 df.enc.dwell$region.f <- factor(df.enc.dwell$region,
                                 levels = c(1, 2, 3),
                                 labels = c("Extreme hot", "Temperate", "Tropical"))
@@ -178,253 +157,337 @@ df.enc.dwell$state.f <- factor(df.enc.dwell$state.id,
                                           "Zacatecas"))
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 df.summer.months <- subset(df.summer.months, year==2017, 
                         select=c('state.id', 'month', 'summer'))
 #df.enc.dwell <- merge(df.enc.dwell, df.summer.months, by="state.id")
+df.enc.dwell$dummy.house <- 1
 ```
 
-##Dwellings Connected to the Grid by Region
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+# Descriptive Analysis
+**Dwellings surveyed per region**
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 # Survey design construction (mmc), this computes the statistical errors
-mmc <- svydesign(id=~upm, strata=~est_dis, 
-                 data=df.enc.dwell, weights=~ factor_sem)
-
 df.enc.dwell$dummy.house <- 1
-# Estimación total de viviendas particulares habitadas 
+
+mmc <- svydesign(id=~upm, strata=~est_dis, 
+                 data=df.enc.dwell, weights=~factor_sem)
+
+## Estimación total de viviendas particulares habitadas 
 tb.dwell <- svytotal(df.enc.dwell$dummy.house, mmc)
 
-total.dwell <- sum(df.enc.dwell$factor_sem)
-sum(df.enc.dwell$dummy.house)
-total.dwell
-```
-Number of dwellings surveyed and number of dwellings represented: `r sum(df.enc.dwell$dummy.house)` and `r total.dwell`
+# Estimación por Región del total de viviendas particulares habitadas 
+tb.dwell.region <- svyby(~dummy.house, by=~region.f, mmc, svytotal)  
 
-*Dwellings Connected to the Grid by Region
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+ea01n <- tb.dwell[[1]]  # Estimación puntual 
+er01n <- t(tb.dwell.region[2]) # Estimación puntual-Región 
+ea01e <- SE(tb.dwell)   # Error estándar 
+er01e <- t(data.frame(SE(tb.dwell.region)))  # Error estándar-Región 
+
+colnames(tb.dwell.region)[colnames(tb.dwell.region)=="dummy.house"] <- "dwellings"
+colnames(tb.dwell.region)[colnames(tb.dwell.region)=="region.f"] <- "region"
+
+tb.dwell <- as.data.frame(tb.dwell)
+tb.dwell.region$se <- round(tb.dwell.region$se,3)
+
+datatable(tb.dwell.region, rownames = FALSE,
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    fixedColumns = TRUE
+  ))
+```
+- Number of dwellings surveyed: `r format(sum(df.enc.dwell$dummy.house), big.mark=",")` <br>
+- Number of dwellings represented by the survey: `r format(tb.dwell$total, big.mark=",")`, 
+standard error: `r format(tb.dwell$SE, big.mark=",", decimal.mark=".")`
+
+
+**Dwellings connected to the grid**
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
 #Get dwellings connected to the grid
 df.enc.dwell$grid <- ifelse(df.enc.dwell$electri %in% "1", 1 ,0) 
 #Total dwellings with insulation
 total.dwell.grid <- sum(df.enc.dwell$grid * df.enc.dwell$factor_sem)
 
-table(df.enc.dwell$grid)
-total.dwell.grid
+#format(total.dwell.grid, big.mark=",", small.interval=3)
 ```
-Number of dwellings connected to the grid `r myround(total.dwell.grid, 2)`
+- Number of dwellings connected to the grid: `r format(total.dwell.grid, big.mark=",", small.interval=3)`*
 
-
-```{r results="asis"}
-freq(df.enc.dwell$grid, weight = df.enc.dwell$factor_sem, report.nas = FALSE, plain.ascii = FALSE, style = "simple", method = "render", headings = FALSE)
-```
-
-Number of dwellings by region
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-# Estimación por Región del total de viviendas particulares habitadas 
-#tb.dwell.region <- svyby(~dummy.house, by=~region.f, mmc, svytotal)  
-
-##Pr01 <- svyby(~a01, by=~REGION, MMC, svytotal)  
-#ea01n <- tb.dwell[[1]]  # Estimación puntual 
-#er01n <- t(tb.dwell.region[2]) # Estimación puntual-Región 
-#ea01e <- SE(tb.dwell)   # Error estándar 
-#er01e <- t(data.frame(SE(tb.dwell.region)))  # Error estándar-Región 
-
-#tb.dwell
-#tb.dwell.region
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE, results="asis"}
+freq(df.enc.dwell$grid, weight = df.enc.dwell$factor_sem, report.nas = FALSE, 
+     plain.ascii = FALSE, style = "simple", method = "render", 
+     headings = FALSE, na.rm= TRUE)
 ```
 
+**Dwellings connected to the grid by region**
+<br> 
 Number of dwellings connected to the grid by region
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-# Survey design construction, this computes the statistical errors
-# Construye el Diseño de la Encuesta (mmc) para calcular las Precisiones Estadísticas 
-#mmc <- svydesign(id=~upm, strata=~est_dis, data=df.enc.dwell, weights=~ factor_sem)
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+mmc <- svydesign(id=~upm, data=df.enc.dwell, strata=~est_dis, weights=~factor_sem)
+tb.grid.region <- cbind(svytable(~region.f+grid, design = mmc), 
+                        prop.table(svytable(~region.f+grid, design = mmc)))
+tb.grid.region <- as.data.frame(round(tb.grid.region, 4))
+  
+#colnames(tb.grid.region)[colnames(tb.grid.region)=="region.f"] <- "region"
+#Printing table
+tb.grid.region <- cbind(tb.grid.region[1], tb.grid.region[3], tb.grid.region[2], tb.grid.region[4])
+tb.grid.region <- rbind(tb.grid.region, colSums(tb.grid.region))
+colnames(tb.grid.region)<-c("dwellings (no grid)", "percent (no grid)", "dwellings (grid)", "percent (grid)")
 
-## Estimación total de viviendas particulares habitadas 
-#tb.dwell <- svytotal(df.enc.dwell$dummy.house, mmc)
+tb.rownames <- rownames(tb.grid.region)
+rownames(tb.grid.region) <- replace(tb.rownames, tb.rownames==4, "Total") 
+#rownames(tb.grid.region) <- tb.rownames
 
-#tb.grid.region <- svyby(~dummy.house, by=~region.f+grid, mmc, svytotal) 
-#colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <-"dwellings"
-
-#tb.grid.region <- merge(tb.grid.region, tb.dwell.region[,c("region.f","dummy.house")], by="region.f")
-#colnames(tb.grid.region)[colnames(tb.grid.region)=="dummy.house"] <- "dwellings.region"
-
-#tb.grid.region <- transform(tb.grid.region, percent.grid = tb.grid.region$dwellings / #tb.grid.region$dwellings.region)
-#tb.grid.region
+datatable(tb.grid.region, rownames = T,
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    fixedColumns = TRUE
+  ))
 ```
 
-```{r}
-table(df.enc.dwell$grid)
-## Eliminate records of dwellings that are not connected to the grid
-df.enc.dwell <- subset(df.enc.dwell, grid==1)
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE}
+mmc <- svydesign(id=~upm, data=df.enc.dwell, strata=~est_dis, weights=~factor_sem)
+
+## Estimating number of dwellings connected to the grid by region
+tb.grid.region <- svyby(~dummy.house, by=~region.f+grid, mmc, svytotal) 
+colnames(tb.grid.region)[colnames(tb.grid.region) == "dummy.house"] <- "dwellings"
+
+tb.grid.region <- merge(tb.grid.region, 
+                        tb.dwell.region[ , c("region.f", "dummy.house")], 
+                        by="region.f")
+
+colnames(tb.grid.region)[colnames(tb.grid.region) == "dummy.house"] <- "dwellings.region"
+
+tb.grid.region <- transform(tb.grid.region, 
+                            percent.grid = myround(tb.grid.region$dwellings / 
+                                                     tb.grid.region$dwellings.region, 3))
+
+tb.grid.region$se <- myround(tb.grid.region$se,3)
+
+##Printing table
+datatable(tb.grid.region, rownames = FALSE,
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    fixedColumns = TRUE
+  ))
 ```
 
-##Electricity bill dates
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-df.enc.dwell$inicia1[df.enc.dwell$inicia1 == 99] <-  NA 
-df.enc.dwell$mes_inic1[df.enc.dwell$mes_inic1 == 99] <-  NA
-df.enc.dwell$inicia2[df.enc.dwell$inicia2 == 99] <-  NA
-df.enc.dwell$mes_inic2[df.enc.dwell$mes_inic2 == 99] <-  NA
-df.enc.dwell$final1[df.enc.dwell$final1 == 99] <-  NA 
-df.enc.dwell$mes_final1[df.enc.dwell$mes_final1 == 99] <-  NA
-df.enc.dwell$final2[df.enc.dwell$final2 == 99] <- NA
-df.enc.dwell$mes_final2[df.enc.dwell$mes_final2 == 99]  <-  NA
+## Electricity Bill Dates
+*For this analysis, the records of dwellings that are not connected to the grid are not considered.*
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+df.dwell.grid <- subset(df.enc.dwell, grid==1)
 
-df.enc.dwell$cons_med1[df.enc.dwell$cons_med1 >= 98888 ] <- NA
-df.enc.dwell$cons_med2[df.enc.dwell$cons_med2 >= 98888 ] <- NA
+df.dwell.grid$inicia1[df.dwell.grid$inicia1 == 99] <-  NA 
+df.dwell.grid$mes_inic1[df.dwell.grid$mes_inic1 == 99] <-  NA
+df.dwell.grid$inicia2[df.dwell.grid$inicia2 == 99] <-  NA
+df.dwell.grid$mes_inic2[df.dwell.grid$mes_inic2 == 99] <-  NA
+df.dwell.grid$final1[df.dwell.grid$final1 == 99] <-  NA 
+df.dwell.grid$mes_final1[df.dwell.grid$mes_final1 == 99] <-  NA
+df.dwell.grid$final2[df.dwell.grid$final2 == 99] <- NA
+df.dwell.grid$mes_final2[df.dwell.grid$mes_final2 == 99]  <-  NA
 
-#df.enc.dwell$inicia1 <- as.integer(df.enc.dwell$inicia1)
+df.dwell.grid$cons_med1[df.dwell.grid$cons_med1 >= 98888 ] <- NA
+df.dwell.grid$cons_med2[df.dwell.grid$cons_med2 >= 98888 ] <- NA
+
 ```
+*So, `r format(sum(df.enc.dwell$dummy.house)-sum(df.dwell.grid$dummy.house), decimal.mark=",")` records are discarted*
 
+Calculating number of days of consumption of the first electricity bill
+```{r, results="asis", echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE}
+attach(df.dwell.grid)
 
-Calculating days of consumption for first electricity bill
-```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
-df.enc.dwell$bill.ini.date1 <- NA
-df.enc.dwell$bill.end.date1 <- NA
+bill.ini.date1 <- NA
+bill.end.date1 <- NA
 
 # The data was obtained from January 2018 to June 2018.
-# So the bills could be from 2017 or 2018.
-# As the survey does not report the year of the electricity bill, it is calculated here
-df.enc.dwell$year_ini1 <- "2018"
-df.enc.dwell$year_end1 <- "2018"
+# So the bills could be from 2017 or 2018. As the survey does not report 
+# the year of the electricity bill, it is calculated here
+year_ini1 <- "2018"
+year_end1 <- "2018"
 
 # Case 1. If the initial period of the bill is from june to december, 
 # it is assumed that the year of the initial period is 2017
-df.enc.dwell$year_ini1[df.enc.dwell$mes_inic1 >= 6] <- 2017
+year_ini1[mes_inic1 >= 6] <- 2017
 
 # Case 2. If the final period of the bill is from july to december, 
 # it is assumed that the year of the final period is 2017
-df.enc.dwell$year_end1[df.enc.dwell$mes_final1 >= 7] <- 2017
+year_end1[mes_final1 >= 7] <- 2017
 
 # Case 3. If the initia month period of the bill is higher than the final month, 
 # it is assumed that the year of the initial period is 2017
-df.enc.dwell$year_ini1[df.enc.dwell$mes_inic1 > df.enc.dwell$mes_final1] <- 2017
+year_ini1[mes_inic1 > mes_final1] <- 2017
 
-df.enc.dwell$bill.ini.date1 <-  str_replace_all(paste(df.enc.dwell$mes_inic1, "-" , 
-                                                         df.enc.dwell$inicia1, "-", 
-                                                         df.enc.dwell$year_ini1),
-                                                   pattern=" ", repl="")
+bill.ini.date1 <-  str_replace_all(paste(mes_inic1, "-", inicia1, "-", 
+                                         year_ini1), pattern=" ", repl="")
 
-df.enc.dwell$bill.end.date1 <-  str_replace_all(paste(df.enc.dwell$mes_final1, "-" , 
-                                                         df.enc.dwell$final1, "-", 
-                                                         df.enc.dwell$year_end1),
-                                                   pattern=" ", repl="")
+bill.end.date1 <-  str_replace_all(paste(mes_final1, "-", final1, "-", 
+                                         year_end1), pattern=" ", repl="")
 
-df.enc.dwell$bill.ini.date1 <- as.Date(as.character(df.enc.dwell$bill.ini.date1), 
-                                          format="%m-%d-%Y")
-df.enc.dwell$bill.end.date1 <- as.Date(as.character(df.enc.dwell$bill.end.date1), 
-                                          format="%m-%d-%Y")
-df.enc.dwell$bill.days1 <- as.integer((df.enc.dwell$bill.end.date1 - df.enc.dwell$bill.ini.date1))
+bill.ini.date1 <- as.Date(as.character(bill.ini.date1), 
+                                        format="%m-%d-%Y")
+
+bill.end.date1 <- as.Date(as.character(bill.end.date1), 
+                                        format="%m-%d-%Y")
+
+bill.days1 <- as.integer((bill.end.date1 - bill.ini.date1))
 
 
 # After obtaining the number of days of the period in the electricity bill. 
 # There are still some special cases that are corrected here.
 # Case 4. If the period in the electricity bill is longer than 1 year, the initial year is assumed to be 2018
-df.enc.dwell$year_ini1[df.enc.dwell$bill.days1 >= 365 & 
-                            (df.enc.dwell$mes_inic1 <= df.enc.dwell$mes_final1)] <- 2018
+year_ini1[bill.days1 >= 365 & (mes_inic1 <= mes_final1)] <- 2018
 
 # Case 5. If the period in the electricity bill is negative, the initial year is assumed to be 2017
-df.enc.dwell$year_ini1[df.enc.dwell$bill.days1 < 0] <- 2017
+year_ini1[bill.days1 < 0] <- 2017
 
-df.enc.dwell$bill.end.date1 <-  str_replace_all(paste(df.enc.dwell$mes_final1, "-" , 
-                                                         df.enc.dwell$final1, "-", df.enc.dwell$year_end1),
-                                                   pattern=" ", repl="")
+bill.end.date1 <-  str_replace_all(paste(mes_final1, "-", final1, "-", 
+                                         year_end1), pattern=" ", repl="")
 
-df.enc.dwell$bill.ini.date1 <-  str_replace_all(paste(df.enc.dwell$mes_inic1, "-" , 
-                                                         df.enc.dwell$inicia1, "-", df.enc.dwell$year_ini1),
-                                                   pattern=" ", repl="")
+bill.ini.date1 <-  str_replace_all(paste(mes_inic1, "-" , inicia1, "-", 
+                                         year_ini1), pattern=" ", repl="")
 
-df.enc.dwell$bill.end.date1 <-  str_replace_all(paste(df.enc.dwell$mes_final1, "-" , 
-                                                         df.enc.dwell$final1, "-", df.enc.dwell$year_end1),
-                                                   pattern=" ", repl="")
+bill.end.date1 <-  str_replace_all(paste(mes_final1, "-" , final1, "-", 
+                                         year_end1), pattern=" ", repl="")
 
-df.enc.dwell$bill.ini.date1 <- as.Date(as.character(df.enc.dwell$bill.ini.date1), format="%m-%d-%Y")
-df.enc.dwell$bill.end.date1 <- as.Date(as.character(df.enc.dwell$bill.end.date1), format="%m-%d-%Y")
-df.enc.dwell$bill.days1 <- as.integer((df.enc.dwell$bill.end.date1 - df.enc.dwell$bill.ini.date1))
+bill.ini.date1 <- as.Date(as.character(bill.ini.date1), format="%m-%d-%Y")
 
-df.enc.dwell$bill.days1[df.enc.dwell$bill.days1 < 0 ] <- NA
-df.enc.dwell$bill.days1[df.enc.dwell$bill.days1 > 180 ] <- NA
+bill.end.date1 <- as.Date(as.character(bill.end.date1), format="%m-%d-%Y")
+
+bill.days1 <- as.integer((bill.end.date1 - bill.ini.date1))
+
+bill.days1[bill.days1 < 0 ] <- NA
+bill.days1[bill.days1 > 180 ] <- NA
+
+desc.stat <- descr(bill.days1, style = "rmarkdown", stats = "common", transpose = TRUE, 
+      headings = FALSE)
+
+detach(df.dwell.grid)
+
+desc.stat
 ```
 
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE, results="asis"}
+svd.dwell <- svydesign(id=~upm, strata=~est_dis, data=df.enc.dwell, weights=~factor_sem)
 
-Calculating days of consumption for second electricity bill
-```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
-df.enc.dwell$bill.ini.date2 <- NA
-df.enc.dwell$bill.end.date2 <- NA
+## Estimating number of dwellings connected to the grid by region
+svyby(~bill.days1, by=~grid, mmc, svymean, na.rm=TRUE) 
+
+mean <- svymean(~bill.days1, svd.dwell, na.rm=TRUE)
+
+variance <- svyvar(~bill.days1, svd.dwell, na.rm=TRUE)
+#svytotal(~bill.days1, svd.dwell, na.rm=TRUE)
+quantiles <- svyquantile(~bill.days1, svd.dwell, c(.25,.5,.75),ci=TRUE, na.rm=TRUE)
+```
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE, results="asis"}
+mean
+variance
+quantiles
+sqrt(as.matrix(variance)[,1])
+```
+
+Calculating days of consumption of second electricity bill (users that pay two electricity bills each period)
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE,  results="asis"}
+attach(df.dwell.grid)
+
+bill.ini.date2 <- NA
+bill.end.date2 <- NA
 
 # The data was obtained from January 2018 to June 2018.
-# So the bills could be from 2017 or 2018.
-# As the survey does not report the year of the electricity bill, it is calculated here
-df.enc.dwell$year_ini2 <- "2018"
-df.enc.dwell$year_end2 <- "2018"
+# So the bills could be from 2017 or 2018. As the survey does
+# not report the year of the electricity bill, it is calculated here
+year_ini2 <- "2018"
+year_end2 <- "2018"
 
 # Case 1. If the initial period of the bill is from june to december, 
 # it is assumed that the year of the initial period is 2017
-df.enc.dwell$year_ini2[df.enc.dwell$mes_inic2 >= 6] <- 2017
+year_ini2[mes_inic2 >= 6] <- 2017
 
 # Case 2. If the final period of the bill is from july to december, 
 # it is assumed that the year of the final period is 2017
-df.enc.dwell$year_end2[df.enc.dwell$mes_final2 >= 7] <- 2017
+year_end2[mes_final2 >= 7] <- 2017
 
-# Case 3. If the initia month period of the bill is higher than the final month, 
-# it is assumed that the year of the initial period is 2017
-df.enc.dwell$year_ini2[df.enc.dwell$mes_inic2 > df.enc.dwell$mes_final2] <- 2017
+# Case 3. If the initia month period of the bill is higher than the final  
+# month, it is assumed that the year of the initial period is 2017
+year_ini2[mes_inic2 > mes_final2] <- 2017
 
-df.enc.dwell$bill.ini.date2 <-  str_replace_all(paste(df.enc.dwell$mes_inic2, "-" , 
-                                                         df.enc.dwell$inicia1, "-", 
-                                                         df.enc.dwell$year_ini2),
-                                                   pattern=" ", repl="")
+bill.ini.date2 <-  str_replace_all(paste(mes_inic2, "-", inicia1, "-", 
+                                         year_ini2), pattern=" ", repl="")
 
-df.enc.dwell$bill.end.date2 <-  str_replace_all(paste(df.enc.dwell$mes_final2, "-" , 
-                                                         df.enc.dwell$final1, "-", 
-                                                         df.enc.dwell$year_end2),
-                                                   pattern=" ", repl="")
+bill.end.date2 <-  str_replace_all(paste(mes_final2, "-", final1, "-", 
+                                         year_end2), pattern=" ", repl="")
 
-df.enc.dwell$bill.ini.date2 <- as.Date(as.character(df.enc.dwell$bill.ini.date2), 
-                                          format="%m-%d-%Y")
-df.enc.dwell$bill.end.date2 <- as.Date(as.character(df.enc.dwell$bill.end.date2), 
-                                          format="%m-%d-%Y")
-df.enc.dwell$bill.days2 <- as.integer((df.enc.dwell$bill.end.date2 - df.enc.dwell$bill.ini.date2))
-
+bill.ini.date2 <- as.Date(as.character(bill.ini.date2), format="%m-%d-%Y")
+bill.end.date2 <- as.Date(as.character(bill.end.date2), format="%m-%d-%Y")
+bill.days2 <- as.integer((bill.end.date2 - bill.ini.date2))
 
 # After obtaining the number of days of the period in the electricity bill. 
 # There are still some special cases that are corrected here.
-# Case 4. If the period in the electricity bill is longer than 1 year, the initial year is assumed to be 2018
-df.enc.dwell$year_ini2[df.enc.dwell$bill.days2 >= 365 & 
-                            (df.enc.dwell$mes_inic2 <= df.enc.dwell$mes_final2)] <- 2018
 
-# Case 5. If the period in the electricity bill is negative, the initial year is assumed to be 2017
-df.enc.dwell$year_ini2[df.enc.dwell$bill.days2 < 0] <- 2017
+# Case 4. If the period in the electricity bill is longer than 1 year, 
+# the initial year is assumed to be 2018
+year_ini2[bill.days2 >= 365 & (mes_inic2 <= mes_final2)] <- 2018
 
-df.enc.dwell$bill.end.date2 <-  str_replace_all(paste(df.enc.dwell$mes_final2, "-" , 
-                                                         df.enc.dwell$final1, "-", df.enc.dwell$year_end2),
-                                                   pattern=" ", repl="")
+# Case 5. If the period in the electricity bill is negative, 
+# the initial year is assumed to be 2017
+year_ini2[bill.days2 < 0] <- 2017
 
-df.enc.dwell$bill.ini.date2 <-  str_replace_all(paste(df.enc.dwell$mes_inic2, "-" , 
-                                                         df.enc.dwell$inicia1, "-", df.enc.dwell$year_ini2),
-                                                   pattern=" ", repl="")
+bill.end.date2 <-  str_replace_all(paste(mes_final2, "-", final1, "-", 
+                                         year_end2), pattern=" ", repl="")
 
-df.enc.dwell$bill.end.date2 <-  str_replace_all(paste(df.enc.dwell$mes_final2, "-" , 
-                                                         df.enc.dwell$final1, "-", df.enc.dwell$year_end2),
-                                                   pattern=" ", repl="")
+bill.ini.date2 <-  str_replace_all(paste(mes_inic2, "-", inicia1, "-", year_ini2),
+                                                pattern=" ", repl="")
 
-df.enc.dwell$bill.ini.date2 <- as.Date(as.character(df.enc.dwell$bill.ini.date2), format="%m-%d-%Y")
-df.enc.dwell$bill.end.date2 <- as.Date(as.character(df.enc.dwell$bill.end.date2), format="%m-%d-%Y")
-df.enc.dwell$bill.days2 <- as.integer((df.enc.dwell$bill.end.date2 - df.enc.dwell$bill.ini.date2))
+bill.end.date2 <-  str_replace_all(paste(mes_final2, "-", final1, "-", year_end2),
+                                                pattern=" ", repl="")
 
-df.enc.dwell$bill.days2[df.enc.dwell$bill.days2 < 0 ] <- NA
-df.enc.dwell$bill.days2[df.enc.dwell$bill.days2 > 180 ] <- NA
+bill.ini.date2 <- as.Date(as.character(bill.ini.date2), format="%m-%d-%Y")
+bill.end.date2 <- as.Date(as.character(bill.end.date2), format="%m-%d-%Y")
+bill.days2 <- as.integer((bill.end.date2 - bill.ini.date2))
+
+bill.days2[bill.days2 < 0 ] <- NA
+bill.days2[bill.days2 > 180 ] <- NA
+
+desc.stat <- descr(bill.days2, style = "rmarkdown", stats = "common", 
+                   transpose = TRUE, headings = FALSE)
+
+detach(df.dwell.grid)
+
+desc.stat 
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
-describe(df.enc.dwell$bill.days1)
-describe(df.enc.dwell$bill.days2)
+
+
+
+```{r, echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE, results="asis"}
+#svyquantile(~bill.days1, svd.dwell, c(.25,.5,.75),ci=TRUE, na.rm=TRUE)
 ```
 
-```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE, results="asis"}
+svyquantile(~bill.days1, mmc, c(.25,.5,.75),ci=TRUE, na.rm=TRUE)
+
+svymean(~bill.days1, svd.dwell, na.rm=TRUE)
+wtd.mean(df.enc.dwell$bill.days1, weights=df.enc.dwell$factor_sem,  na.rm=TRUE)
+         
+svyvar(~bill.days1, mmc, na.rm=TRUE)
+wtd.var(df.enc.dwell$bill.days1, weights=df.enc.dwell$factor_sem,  na.rm=TRUE)
+
+svyquantile(~bill.days1, mmc, c(0.0,.25,.5,.75,1.0),ci=TRUE, na.rm=TRUE)
+wtd.quantile(df.enc.dwell$bill.days1, weights=df.enc.dwell$factor_sem, na.rm=TRUE)
+```
+
+```{r, echo=TRUE, eval=FALSE, warning=FALSE, message=FALSE, results="asis"}
+#describe(df.enc.dwell$bill.days1, weights=df.enc.dwell$factor_sem, exclude.missing=TRUE, digits=3)
+#svyhist(~bill.days1, mmc, main="Survey weighted - Bill days",col="purple",ylim=c(0,6e-2))
+describe(df.enc.dwell$bill.days1, weights=NULL, exclude.missing=TRUE, digits=3)
+```
+
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
 attach(df.enc.dwell)
-#df.bill.test <- subset(df.enc.dwell, bill.days1 >= 25, 
-#                        select=c('bill.days1', 'mes_inic1', 'final1', 'mes_final1', 
-#                                 'inicia1', 'bill.ini.date1', 'bill.end.date1', 'cons_med1')) 
-
 df.bill.test2 <- subset(df.enc.dwell, bill.days2 >= 0, 
                         select=c('bill.days1', 'bill.days2', 'bill.ini.date1', 
                                  'bill.ini.date2', 'bill.end.date1',
@@ -437,15 +500,16 @@ df.bill.test2[order(-df.bill.test2$bill.days2),]
 
 Reference: https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
 
-```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results=FALSE}
 attach(df.enc.dwell)
-df.bill.error <- subset(df.enc.dwell, bill.days1 < 91, 
+df.bill.error <- subset(df.enc.dwell, bill.days1 < 91 & bill.days1 > 24, 
                         select=c('bill.days1', 'mes_inic1', 'final1', 'mes_final1', 
                                  'inicia1', 'bill.ini.date1', 'bill.end.date1', 'cons_med1'))
 detach(df.enc.dwell)
 #sort(df.bill.error$bill.days1,decreasing=FALSE)
 df.bill.error[order(df.bill.error$bill.days1),]
 ```
+
 ```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
 attach(df.enc.dwell)
 #df.bill.test <- subset(df.enc.dwell, bill.days1 >= 25, 
@@ -454,7 +518,7 @@ attach(df.enc.dwell)
 
 df.bill.test <- subset(df.enc.dwell, bill.days1 >= 25 & local_com == 2, 
                         select=c('bill.days1', 'bill.ini.date1', 'bill.end.date1', 
-                                 'cons_med1', 'cond_energ', 'local_com', 'elect_loc', 'cons_med2'))
+                                 'cons_med1', 'cond_energ', 'local_com', 'elect_loc', 'cons_med2', 'factor_sem'))
 
 detach(df.enc.dwell)
 #sort(df.bill.error$bill.days1,decreasing=FALSE)
@@ -463,12 +527,25 @@ df.bill.test <- transform(df.bill.test, bill.cons.day = df.bill.test$cons_med1 /
 
 df.bill.test[order(df.bill.test$bill.cons.day),]
 
-
 describe(df.bill.test$bill.cons.day)
 ```
 
+```{r}
+UsePackage('weights')
+#wpct(df.bill.test$bill.cons.day, df.bill.test$factor_sem)
+describe(stdz(df.bill.test$bill.cons.day, df.bill.test$factor_sem))
+```
 
 # Tariffs
+
+## Dwellings Divided by Tariff
+```{r, results="asis"}
+#write.csv(df.enc.dwell, "./output/encevi_dwelling.csv", row.names=TRUE, na="")
+#show table of tariffs with missing values
+freq(df.enc.dwell$tipo_tarif.f, report.nas = TRUE, style = "rmarkdown", weights = df.enc.dwell$factor_sem,
+     headings = FALSE, na.rm = TRUE)
+```
+
 Reference: http://www.cfe.mx/tarifas/Pages/Tarifas.aspx
 ```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
 #summary(df.enc.dwell$tariff)
