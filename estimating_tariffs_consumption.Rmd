@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+Reference: https://cran.r-project.org/web/packages/summarytools/vignettes/Introduction.html
+
+# Tariffs
+
+## Dwellings Divided by Tariff
+```{r, results="asis"}
+#write.csv(df.enc.dwell, "./output/encevi_dwelling.csv", row.names=TRUE, na="")
+#show table of tariffs with missing values
+freq(df.enc.dwell$tipo_tarif.f, report.nas = TRUE, style = "rmarkdown", weights = df.enc.dwell$factor_sem,
+     headings = FALSE, na.rm = TRUE)
+```
+
+Reference: http://www.cfe.mx/tarifas/Pages/Tarifas.aspx
+```{r, echo=FALSE, eval=TRUE, warning = FALSE, message = FALSE, results = FALSE}
+#summary(df.enc.dwell$tariff)
+#df.enc.dwell$tariff(is.na(df.enc.dwell$tariff)) <- "Don't know"
+df.enc.dwell$tariff <- as.character(df.enc.dwell$tariff)
+df.enc.dwell$tipo_tarif.f <- as.character(df.enc.dwell$tipo_tarif.f)
+
+df.enc.dwell$tariff[df.enc.dwell$tariff==""] <- "Don't know"
+
+df.enc.dwell$tariff.m <- recode(df.enc.dwell$tipo_tarif.f, "Don't know"= df.enc.dwell$tariff)
+#df.enc.dwell$tariff.m <- df.enc.dwell$tariff.m %>% replace_na("Don't know")
+
+df.enc.dwell$tipo_tarif.f <- factor(df.enc.dwell$tipo_tarif,
+                               levels = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+                               labels = c("2", "1", "1A", "1B", "1C", "1D", 
+                                          "1E", "1F", "DAC", "Don't know"))
+df.enc.dwell$tariff.m <- as.factor(df.enc.dwell$tariff.m)
+df.enc.dwell$tariff.m <- factor(df.enc.dwell$tariff.m,
+                               levels = c("2", "1", "1A", "1B", "1C", "1D", 
+                                          "1E", "1F", "DAC", "Don't know"),
+                               labels = c("2", "1", "1A", "1B", "1C", "1D", 
+                                          "1E", "1F", "DAC", "Don't know"))
+prop.table(table(df.enc.dwell$tipo_tarif.f, exclude = NULL))*100
+prop.table(table(df.enc.dwell$tariff.m, exclude = NULL))*100
+```
+
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+table(df.enc.dwell$state.f, df.enc.dwell$tariff.m, exclude = NULL)
+```
+
+```{r, echo=TRUE, eval=TRUE, warning = FALSE, message = FALSE}
+table(df.enc.dwell$state.f, df.enc.dwell$tipo_tarif.f, exclude = NULL)
+```
